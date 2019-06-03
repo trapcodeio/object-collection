@@ -1,0 +1,21 @@
+{
+  "name": "object-collection",
+  "version": "0.0.1",
+  "description": "Lodash object helpers as a class.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "ts-node-dev --transpile-only --respawn app.ts"
+  },
+  "repository": "https://github.com/trapcodeio/object-collection.git",
+  "author": "trapcodeio",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.133",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
+  }
+}
