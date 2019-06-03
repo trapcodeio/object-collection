@@ -1,6 +1,6 @@
 {
   "name": "object-collection",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Lodash object helpers as a class.",
   "main": "dist/index.js",
   "scripts": {
