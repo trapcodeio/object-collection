@@ -106,6 +106,12 @@ class ObjectCollection {
         return lodash_1.default.cloneWith(this.data, customizer);
     }
     /**
+     * Count Keys in Object
+     */
+    count() {
+        return Object.keys(this.data).length;
+    }
+    /**
      * Defaults
      * @see _.LodashDefaults
      */
@@ -120,20 +126,6 @@ class ObjectCollection {
     defaultsDeep(...sources) {
         lodash_1.default.defaultsDeep(this.data, ...sources);
         return this;
-    }
-    /**
-     * ToPairs
-     * @see _.LodashToPairs
-     */
-    toPairs() {
-        return lodash_1.default.toPairs(this.data);
-    }
-    /**
-     * ToPairsIn
-     * @see _.LodashToPairsIn
-     */
-    toPairsIn() {
-        return lodash_1.default.toPairsIn(this.data);
     }
     /**
      * Extend Object object
@@ -234,6 +226,99 @@ class ObjectCollection {
         return lodash_1.default.invert(this.data);
     }
     /**
+     *  InvertBy
+     *  @see _.LodashInvertBy
+     */
+    invertBy(iteratee) {
+        return lodash_1.default.invertBy(iteratee);
+    }
+    /**
+     * Invoke
+     * @see _.LodashInvoke
+     */
+    invoke(path, ...args) {
+        return lodash_1.default.invoke(this.data, path, ...args);
+    }
+    /**
+     * Keys
+     * @see _.LodashKeys
+     */
+    keys() {
+        return lodash_1.default.keys(this.data);
+    }
+    /**
+     * KeysIn
+     * @see _.LodashKeysIn
+     */
+    keysIn() {
+        return lodash_1.default.keysIn(this.data);
+    }
+    /**
+     * MapKeys
+     * @see _.LodashMapKeys
+     */
+    mapKeys(iteratee) {
+        return lodash_1.default.mapKeys(this.data, iteratee);
+    }
+    /**
+     * MapValues
+     * @see _.LodashMapValues
+     */
+    mapValues(iteratee) {
+        return lodash_1.default.mapValues(this.data, iteratee);
+    }
+    /**
+     * Merge
+     * @see _.LodashMerge
+     */
+    merge(...sources) {
+        lodash_1.default.merge(this.data, ...sources);
+        return this;
+    }
+    /**
+     * MergeWith
+     * @see _.LodashMergeWith
+     */
+    mergeWith(source, customizer) {
+        lodash_1.default.mergeWith(this.data, source, customizer);
+        return this;
+    }
+    /**
+     * Omit
+     * @see _.LodashOmit
+     */
+    omit(paths) {
+        return lodash_1.default.omit(this.data, paths);
+    }
+    /**
+     * OmitBy
+     * @see _.LodashOmitBy
+     */
+    omitBy(predicate) {
+        return lodash_1.default.omitBy(this.data, predicate);
+    }
+    /**
+     * Pick
+     * @see _.LodashPick
+     */
+    pick(paths) {
+        return lodash_1.default.pick(this.data, paths);
+    }
+    /**
+     * PickBy
+     * @see _.LodashPickBy
+     */
+    pickBy(predicate) {
+        return lodash_1.default.pickBy(this.data, predicate);
+    }
+    /**
+     * Result
+     * @see _.LodashResult
+     */
+    result(path, $default) {
+        return lodash_1.default.result(this.data, path, $default);
+    }
+    /**
      * Set value to path of object.
      * @method
      * @param {string} path
@@ -255,31 +340,71 @@ class ObjectCollection {
         return this;
     }
     /**
+     * SetWith
+     */
+    setWith(path, value, customizer) {
+        lodash_1.default.setWith(this.data, path, value, customizer);
+        return this;
+    }
+    /**
+     * ToPairs
+     * @see _.LodashToPairs
+     */
+    toPairs() {
+        return lodash_1.default.toPairs(this.data);
+    }
+    /**
+     * ToPairsIn
+     * @see _.LodashToPairsIn
+     */
+    toPairsIn() {
+        return lodash_1.default.toPairsIn(this.data);
+    }
+    /**
+     * Transform
+     * @see _.LodashTransform
+     */
+    transform(iteratee, accumulator) {
+        // @ts-ignore
+        return lodash_1.default.transform(this.data, iteratee, accumulator);
+    }
+    /**
      * Unset a path in object.
-     * @method
-     * @param {string} path
-     * @return {boolean}
+     * @see _.LodashUnset
      */
     unset(path) {
-        return lodash_1.default.unset(this.data, path);
+        lodash_1.default.unset(this.data, path);
+        return this;
     }
     /**
-     * Count Keys in Object
+     * Update
+     * @see _.LodashUpdate
      */
-    count() {
-        return Object.keys(this.data).length;
+    update(path, updater) {
+        lodash_1.default.update(this.data, path, updater);
+        return this;
     }
     /**
-     * Merge Object with another object
-     * @param path
-     * @param value
-     * @param $return
+     * UpdateWith
+     * @see _.LodashUpdateWith
      */
-    mergeWith(path, value, $return) {
-        let $object = this.get(path, {});
-        $object = lodash_1.default.merge($object, value);
-        this.set(path, $object);
-        return $return ? $object : this;
+    updateWith(path, updater, customizer) {
+        lodash_1.default.updateWith(this.data, path, updater, customizer);
+        return this;
+    }
+    /**
+     * Values
+     * @see _.LodashValues
+     */
+    values() {
+        return lodash_1.default.values(this.data);
+    }
+    /**
+     * Values
+     * @see _.LodashValues
+     */
+    valuesIn() {
+        return lodash_1.default.valuesIn(this.data);
     }
     /**
      * Push to array in object
@@ -287,13 +412,12 @@ class ObjectCollection {
      * @param value
      */
     push(path, value) {
-        const storedValue = this.get(path, []);
+        const storedValue = this.path(path, []);
         if (Array.isArray(storedValue)) {
-            const pushed = storedValue.push(value);
+            storedValue.push(value);
             this.set(path, storedValue);
-            return pushed;
         }
-        return false;
+        return this;
     }
     /**
      * Add Key and Value to Object

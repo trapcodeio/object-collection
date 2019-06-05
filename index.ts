@@ -1,5 +1,7 @@
 import _ from "lodash";
 
+type StringOrStringArray = string | string[];
+
 /**
  * ObjectCollectionClass
  */
@@ -29,7 +31,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom(path: string, $default?: any): ObjectCollection {
+    public newInstanceFrom(path: StringOrStringArray, $default?: any): ObjectCollection {
         return new ObjectCollection(this.get(path, $default));
     }
 
@@ -39,7 +41,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom(path: string, $default?: any): ObjectCollection {
+    public cloneInstanceFrom(path: StringOrStringArray, $default?: any): ObjectCollection {
         return new ObjectCollection(_.cloneDeep(this.get(path, $default)));
     }
 
@@ -120,6 +122,13 @@ class ObjectCollection {
     }
 
     /**
+     * Count Keys in Object
+     */
+    public count() {
+        return Object.keys(this.data).length;
+    }
+
+    /**
      * Defaults
      * @see _.LodashDefaults
      */
@@ -135,22 +144,6 @@ class ObjectCollection {
     public defaultsDeep(...sources: any[]): this {
         _.defaultsDeep(this.data, ...sources);
         return this;
-    }
-
-    /**
-     * ToPairs
-     * @see _.LodashToPairs
-     */
-    public toPairs(): any[] {
-        return _.toPairs(this.data);
-    }
-
-    /**
-     * ToPairsIn
-     * @see _.LodashToPairsIn
-     */
-    public toPairsIn(): any[] {
-        return _.toPairsIn(this.data);
     }
 
     /**
@@ -228,7 +221,7 @@ class ObjectCollection {
      * @param {*} [$default]
      * @return {*}
      */
-    public get(path: string | string[], $default?: any): any {
+    public get(path: StringOrStringArray, $default?: any): any {
         return _.get(this.data, path, $default);
     }
 
@@ -240,7 +233,7 @@ class ObjectCollection {
      * @see _.LodashHas
      * @return {boolean}
      */
-    public has(path: string | string[]): boolean {
+    public has(path: StringOrStringArray): boolean {
         return _.has(this.data, path);
     }
 
@@ -251,7 +244,7 @@ class ObjectCollection {
      * @see _.LodashHasIn
      * @return {boolean}
      */
-    public hasIn(path: string | string[]): boolean {
+    public hasIn(path: StringOrStringArray): boolean {
         return _.hasIn(this.data, path);
     }
 
@@ -259,8 +252,114 @@ class ObjectCollection {
      * Invert
      * @see _.LodashInvert
      */
-    public invert() {
+    public invert(): any {
         return _.invert(this.data);
+    }
+
+    /**
+     *  InvertBy
+     *  @see _.LodashInvertBy
+     */
+    public invertBy(iteratee: () => any): any {
+        return _.invertBy(iteratee);
+    }
+
+    /**
+     * Invoke
+     * @see _.LodashInvoke
+     */
+    public invoke(path: StringOrStringArray, ...args): any {
+        return _.invoke(this.data, path, ...args);
+    }
+
+    /**
+     * Keys
+     * @see _.LodashKeys
+     */
+    public keys(): any[] {
+        return _.keys(this.data);
+    }
+
+    /**
+     * KeysIn
+     * @see _.LodashKeysIn
+     */
+    public keysIn(): any[] {
+        return _.keysIn(this.data);
+    }
+
+    /**
+     * MapKeys
+     * @see _.LodashMapKeys
+     */
+    public mapKeys(iteratee: () => any): object {
+        return _.mapKeys(this.data, iteratee);
+    }
+
+    /**
+     * MapValues
+     * @see _.LodashMapValues
+     */
+    public mapValues(iteratee: () => any): object {
+        return _.mapValues(this.data, iteratee);
+    }
+
+    /**
+     * Merge
+     * @see _.LodashMerge
+     */
+    public merge(...sources: any): this {
+        _.merge(this.data, ...sources);
+        return this;
+    }
+
+    /**
+     * MergeWith
+     * @see _.LodashMergeWith
+     */
+    public mergeWith(source: any, customizer): this {
+        _.mergeWith(this.data, source, customizer);
+        return this;
+    }
+
+    /**
+     * Omit
+     * @see _.LodashOmit
+     */
+    public omit(paths: StringOrStringArray): object {
+        return _.omit(this.data, paths);
+    }
+
+    /**
+     * OmitBy
+     * @see _.LodashOmitBy
+     */
+    public omitBy(predicate: () => any): object {
+        return _.omitBy(this.data, predicate);
+    }
+
+    /**
+     * Pick
+     * @see _.LodashPick
+     */
+    public pick(paths: StringOrStringArray): object {
+        return _.pick(this.data, paths);
+    }
+
+    /**
+     * PickBy
+     * @see _.LodashPickBy
+     */
+    public pickBy(predicate: () => any): object {
+        return _.pickBy(this.data, predicate);
+    }
+
+    /**
+     * Result
+     * @see _.LodashResult
+     */
+    public result(path: StringOrStringArray, $default?: any): any {
+        return _.result(this.data, path, $default);
     }
 
     /**
@@ -270,7 +369,7 @@ class ObjectCollection {
      * @param {*} value
      * @return {*}
      */
-    public set(path: string | string[] | object, value?: any): this {
+    public set(path: StringOrStringArray | object, value?: any): this {
         if (typeof path === "object") {
 
             const keys = Object.keys(path);
@@ -288,33 +387,79 @@ class ObjectCollection {
     }
 
     /**
+     * SetWith
+     */
+    public setWith(path: StringOrStringArray, value: any, customizer?: () => any): object {
+        _.setWith(this.data, path, value, customizer);
+        return this;
+    }
+
+    /**
+     * ToPairs
+     * @see _.LodashToPairs
+     */
+    public toPairs(): any[] {
+        return _.toPairs(this.data);
+    }
+
+    /**
+     * ToPairsIn
+     * @see _.LodashToPairsIn
+     */
+    public toPairsIn(): any[] {
+        return _.toPairsIn(this.data);
+    }
+
+    /**
+     * Transform
+     * @see _.LodashTransform
+     */
+    public transform(iteratee: () => any, accumulator?: any): any {
+        // @ts-ignore
+        return _.transform(this.data, iteratee, accumulator);
+    }
+
+    /**
      * Unset a path in object.
-     * @method
-     * @param {string} path
-     * @return {boolean}
+     * @see _.LodashUnset
      */
-    public unset(path: string) {
-        return _.unset(this.data, path);
+    public unset(path: StringOrStringArray): this {
+        _.unset(this.data, path);
+        return this;
     }
 
     /**
-     * Count Keys in Object
+     * Update
+     * @see _.LodashUpdate
      */
-    public count() {
-        return Object.keys(this.data).length;
+    public update(path: StringOrStringArray, updater: () => any): this {
+        _.update(this.data, path, updater);
+        return this;
     }
 
     /**
-     * Merge Object with another object
-     * @param path
-     * @param value
-     * @param $return
+     * UpdateWith
+     * @see _.LodashUpdateWith
      */
-    public mergeWith(path: string, value: object, $return?: false): this {
-        let $object = this.get(path, {});
-        $object = _.merge($object, value);
-        this.set(path, $object);
-        return $return ? $object : this;
+    public updateWith(path: StringOrStringArray, updater: () => any, customizer?: () => any): this {
+        _.updateWith(this.data, path, updater, customizer);
+        return this;
+    }
+
+    /**
+     * Values
+     * @see _.LodashValues
+     */
+    public values(): any[] {
+        return _.values(this.data);
+    }
+
+    /**
+     * Values
+     * @see _.LodashValues
+     */
+    public valuesIn(): any[] {
+        return _.valuesIn(this.data);
     }
 
     /**
@@ -322,14 +467,15 @@ class ObjectCollection {
      * @param path
      * @param value
      */
-    public push(path: string, value: any) {
-        const storedValue = this.get(path, []);
+    public push(path: StringOrStringArray, value: any): this {
+        const storedValue = this.path(path, []);
+
         if (Array.isArray(storedValue)) {
-            const pushed = storedValue.push(value);
+            storedValue.push(value);
             this.set(path, storedValue);
-            return pushed;
         }
-        return false;
+
+        return this;
     }
 
     /**
@@ -337,7 +483,7 @@ class ObjectCollection {
      * @param path
      * @param $object
      */
-    public addToObject(path: string, $object: {
+    public addToObject(path: StringOrStringArray, $object: {
         key: string,
         value: any,
     }) {
@@ -364,7 +510,7 @@ class ObjectCollection {
      * @param path
      * @param $default
      */
-    public path(path: string, $default?: object): ObjectCollection {
+    public path(path: StringOrStringArray, $default?: object): ObjectCollection {
         return this.newInstanceFrom(path, $default);
     }
 

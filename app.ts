@@ -1,12 +1,16 @@
-import Obj = require("./index");
+const persons = {
+    email: "AppDeveloper@app.io",
+    name: "sky",
+    contact: {
+        address: "Astro World",
+        country: "Canada",
+    },
+};
 
-const $obj = Obj.use({foo: "Bar", hello: "World"});
-// data: => {foo: "Bar", hello: "World"}
+console.log();
+/////////////////////////////////////////////////////////
 
-$obj.set({message: {good: true, text: "welcome"}});
-$obj.path("message").set({icon: "fa-icon"});
+console.log(persons);
 
-const $clonedMessage = $obj.cloneInstanceFrom("message").set({text: "From Clone"});
-
-console.log($obj.return());
-console.log($clonedMessage.return());
+/////////////////////////////////////////////////////////
+console.log();
