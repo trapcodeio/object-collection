@@ -109,7 +109,7 @@ class ObjectCollection {
      * Count Keys in Object
      */
     count() {
-        return Object.keys(this.data).length;
+        return lodash_1.default.size(this.data);
     }
     /**
      * Defaults
@@ -341,10 +341,18 @@ class ObjectCollection {
     }
     /**
      * SetWith
+     * @see _.LodashSetWith
      */
     setWith(path, value, customizer) {
         lodash_1.default.setWith(this.data, path, value, customizer);
         return this;
+    }
+    /**
+     * Size
+     * @see _.LodashSize
+     */
+    size() {
+        return lodash_1.default.size(this.data);
     }
     /**
      * ToPairs

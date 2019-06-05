@@ -1,47 +1,52 @@
 # Javascript object collection.
 
-built from **Loadash**'s object functions api.
+built from **Lodash**'s object functions api.
 
 so instead of `_.extend(obj, {})`
 you do
-`obj.extend({})`.
+`data.extend({})`.
 
-It is also chain-able.
+**ALL mutable functions returns `this`**
 
+Full Docs to out soon. :)
 
 ### Usage
 ```javascript
-const Obj = require("./index");
-// OR
-import Obj from "./index";
+const Obj = require("object-collection");
 
-
-let $obj = new Obj();
+let data = new Obj();
 // Creates empty object
-// data: => {}
+// => {}
 
 
-$obj = new Obj({foo: "Bar", hello: "World"});
-// data: => {foo: "Bar", hello: "World"}
+data = new Obj({foo: "Bar", hello: "World"});
+// => {foo: "Bar", hello: "World"}
 
 /**
 * Use is a static helper to create new collection instance
 */
-$obj = Obj.use({foo: "Bar", hello: "World"});
-// data: => {foo: "Bar", hello: "World"}
+data = data.use({foo: "Bar", hello: "World"});
+// => {foo: "Bar", hello: "World"}
 
 
-$obj.set({message: {good: true, text: "welcome"}});
-// data: => {foo: "Bar", hello: "World", message: {good: true, text: "welcome"}}
+data.has("foo")
+// => true
+
+data.pick('foo');
+// => {foo: bar}
+
+
+data.set({message: {good: true, text: "welcome"}});
+// => {foo: "Bar", hello: "World", message: {good: true, text: "welcome"}}
 ```
 
 After Message has been set we can still access it using `.path` function
 ```javascript
-$obj.path("message");
+data.path("message");
 // Returns message value as a collection
 
-$obj.path("message").set({icon:"fa-smile"});
-// data: => {foo: "Bar", hello: "World", message: {
+data.path("message").set({icon:"fa-smile"});
+// => {foo: "Bar", hello: "World", message: {
 //          good: true, text: "welcome", icon: "fa-smile"
 //      }}
 ```
@@ -49,9 +54,9 @@ $obj.path("message").set({icon:"fa-smile"});
     
 `.path` is able to modify contents of main object unless cloned.
 ```javascript
-$obj.path("message");
+data.path("message");
 // Returns message value as a collection
 
-const $newObj = $obj.cloneInstanceFrom("message").set({icon:"fa-smile"});
-// data: => {ood: true, text: "welcome", icon: "fa-smile"}
+const $newObj = data.cloneInstanceFrom("message").set({icon:"fa-smile"});
+// => {ood: true, text: "welcome", icon: "fa-smile"}
 ```

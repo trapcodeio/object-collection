@@ -125,7 +125,7 @@ class ObjectCollection {
      * Count Keys in Object
      */
     public count() {
-        return Object.keys(this.data).length;
+        return _.size(this.data);
     }
 
     /**
@@ -388,10 +388,19 @@ class ObjectCollection {
 
     /**
      * SetWith
+     * @see _.LodashSetWith
      */
     public setWith(path: StringOrStringArray, value: any, customizer?: () => any): object {
         _.setWith(this.data, path, value, customizer);
         return this;
+    }
+
+    /**
+     * Size
+     * @see _.LodashSize
+     */
+    public size(): number {
+        return _.size(this.data);
     }
 
     /**
