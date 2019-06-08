@@ -1,16 +1,33 @@
 import _ from "lodash";
 
-type StringOrStringArray = string | string[];
+type PathType = string | string[] | number;
 
 /**
  * ObjectCollectionClass
  */
 class ObjectCollection {
 
+    /**
+     * Return 4.17.11
+     */
+    public static _ = _;
+
+    /**
+     * @alias ObjectCollection._
+     */
+    public static lodashVersion = "4.17.11";
+
+    /**
+     * Return new instance of ObjectCollection;
+     * @param data
+     */
     public static use(data: object = {}): ObjectCollection {
         return new ObjectCollection(data);
     }
 
+    /**
+     * Data being modified.
+     */
     protected data: object;
 
     /**
@@ -31,7 +48,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom(path: StringOrStringArray, $default?: any): ObjectCollection {
+    public newInstanceFrom(path: PathType, $default?: any): ObjectCollection {
         return new ObjectCollection(this.get(path, $default));
     }
 
@@ -41,8 +58,12 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom(path: StringOrStringArray, $default?: any): ObjectCollection {
+    public cloneInstanceFrom(path: PathType, $default?: any): ObjectCollection {
         return new ObjectCollection(_.cloneDeep(this.get(path, $default)));
+    }
+
+    public cloneThis(): ObjectCollection {
+        return new ObjectCollection(this.return(true));
     }
 
     /**
@@ -221,7 +242,7 @@ class ObjectCollection {
      * @param {*} [$default]
      * @return {*}
      */
-    public get(path: StringOrStringArray, $default?: any): any {
+    public get(path: PathType | number, $default?: any): any {
         return _.get(this.data, path, $default);
     }
 
@@ -233,7 +254,7 @@ class ObjectCollection {
      * @see _.LodashHas
      * @return {boolean}
      */
-    public has(path: StringOrStringArray): boolean {
+    public has(path: PathType): boolean {
         return _.has(this.data, path);
     }
 
@@ -244,7 +265,7 @@ class ObjectCollection {
      * @see _.LodashHasIn
      * @return {boolean}
      */
-    public hasIn(path: StringOrStringArray): boolean {
+    public hasIn(path: PathType): boolean {
         return _.hasIn(this.data, path);
     }
 
@@ -268,7 +289,7 @@ class ObjectCollection {
      * Invoke
      * @see _.LodashInvoke
      */
-    public invoke(path: StringOrStringArray, ...args): any {
+    public invoke(path: PathType, ...args): any {
         return _.invoke(this.data, path, ...args);
     }
 
@@ -326,7 +347,7 @@ class ObjectCollection {
      * Omit
      * @see _.LodashOmit
      */
-    public omit(paths: StringOrStringArray): object {
+    public omit(paths: PathType): object {
         return _.omit(this.data, paths);
     }
 
@@ -342,7 +363,7 @@ class ObjectCollection {
      * Pick
      * @see _.LodashPick
      */
-    public pick(paths: StringOrStringArray): object {
+    public pick(paths: PathType): object {
         return _.pick(this.data, paths);
     }
 
@@ -358,7 +379,7 @@ class ObjectCollection {
      * Result
      * @see _.LodashResult
      */
-    public result(path: StringOrStringArray, $default?: any): any {
+    public result(path: PathType, $default?: any): any {
         return _.result(this.data, path, $default);
     }
 
@@ -369,7 +390,7 @@ class ObjectCollection {
      * @param {*} value
      * @return {*}
      */
-    public set(path: StringOrStringArray | object, value?: any): this {
+    public set(path: PathType | object, value?: any): this {
         if (typeof path === "object") {
 
             const keys = Object.keys(path);
@@ -390,7 +411,7 @@ class ObjectCollection {
      * SetWith
      * @see _.LodashSetWith
      */
-    public setWith(path: StringOrStringArray, value: any, customizer?: () => any): object {
+    public setWith(path: PathType, value: any, customizer?: () => any): object {
         _.setWith(this.data, path, value, customizer);
         return this;
     }
@@ -432,7 +453,7 @@ class ObjectCollection {
      * Unset a path in object.
      * @see _.LodashUnset
      */
-    public unset(path: StringOrStringArray): this {
+    public unset(path: PathType): this {
         _.unset(this.data, path);
         return this;
     }
@@ -441,7 +462,7 @@ class ObjectCollection {
      * Update
      * @see _.LodashUpdate
      */
-    public update(path: StringOrStringArray, updater: () => any): this {
+    public update(path: PathType, updater: () => any): this {
         _.update(this.data, path, updater);
         return this;
     }
@@ -450,7 +471,7 @@ class ObjectCollection {
      * UpdateWith
      * @see _.LodashUpdateWith
      */
-    public updateWith(path: StringOrStringArray, updater: () => any, customizer?: () => any): this {
+    public updateWith(path: PathType, updater: () => any, customizer?: () => any): this {
         _.updateWith(this.data, path, updater, customizer);
         return this;
     }
@@ -472,45 +493,28 @@ class ObjectCollection {
     }
 
     /**
-     * Push to array in object
+     * Returns a path as array or creates one.
      * @param path
-     * @param value
+     * @param forceToArrayIfNotArray
      */
-    public push(path: StringOrStringArray, value: any): this {
-        const storedValue = this.path(path, []);
+    public array(path: PathType, forceToArrayIfNotArray?: boolean): any[] {
+        const storedValue = this.get(path, undefined);
 
-        if (Array.isArray(storedValue)) {
-            storedValue.push(value);
-            this.set(path, storedValue);
+        if (storedValue === undefined) {
+            this.set(path, []);
+        } else {
+            if (Array.isArray(storedValue)) {
+                return storedValue;
+            } else {
+                if (forceToArrayIfNotArray) {
+                    this.set(path, [storedValue]);
+                } else {
+                    throw new Error(`Path: "${path}" exist but it's not an array.`);
+                }
+            }
         }
 
-        return this;
-    }
-
-    /**
-     * Add Key and Value to Object
-     * @param path
-     * @param $object
-     */
-    public addToObject(path: StringOrStringArray, $object: {
-        key: string,
-        value: any,
-    }) {
-        const storedValue = this.get(path, {});
-        if (typeof storedValue === "object") {
-            storedValue[$object.key] = $object.value;
-            this.set(path, storedValue);
-        }
-        return false;
-    }
-
-    /**
-     * ![Deprecated] Use .return();
-     * @returns {*}
-     * @deprecated
-     */
-    public all() {
-        return this.data;
+        return this.get(path);
     }
 
     /**
@@ -519,7 +523,7 @@ class ObjectCollection {
      * @param path
      * @param $default
      */
-    public path(path: StringOrStringArray, $default?: object): ObjectCollection {
+    public path(path: PathType, $default?: object): ObjectCollection {
         return this.newInstanceFrom(path, $default);
     }
 
@@ -531,12 +535,10 @@ class ObjectCollection {
      * this.clone is used;
      * @returns {*}
      */
-    public return(clone?: string | boolean): any {
+    public return(clone?: string | boolean, cloneDeep: boolean = true): any {
 
         if (clone === true) {
-            return this.cloneDeep();
-        } else if (clone === "!deep") {
-            return this.clone();
+            return cloneDeep ? this.cloneDeep() : this.clone();
         }
 
         return this.data;

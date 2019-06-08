@@ -7,9 +7,6 @@ const lodash_1 = __importDefault(require("lodash"));
  * ObjectCollectionClass
  */
 class ObjectCollection {
-    static use(data = {}) {
-        return new ObjectCollection(data);
-    }
     /**
      * Object to use or a new object will be used.
      * @param data
@@ -20,6 +17,13 @@ class ObjectCollection {
         }
         this.data = data;
         return this;
+    }
+    /**
+     * Return new instance of ObjectCollection;
+     * @param data
+     */
+    static use(data = {}) {
+        return new ObjectCollection(data);
     }
     /**
      * Return path as an instance of object validator
@@ -37,6 +41,9 @@ class ObjectCollection {
      */
     cloneInstanceFrom(path, $default) {
         return new ObjectCollection(lodash_1.default.cloneDeep(this.get(path, $default)));
+    }
+    cloneThis() {
+        return new ObjectCollection(this.return(true));
     }
     /**
      * Assign to object
@@ -415,38 +422,29 @@ class ObjectCollection {
         return lodash_1.default.valuesIn(this.data);
     }
     /**
-     * Push to array in object
+     * Returns a path as array or creates one.
      * @param path
-     * @param value
+     * @param forceToArrayIfNotArray
      */
-    push(path, value) {
-        const storedValue = this.path(path, []);
-        if (Array.isArray(storedValue)) {
-            storedValue.push(value);
-            this.set(path, storedValue);
+    array(path, forceToArrayIfNotArray) {
+        const storedValue = this.get(path, undefined);
+        if (storedValue === undefined) {
+            this.set(path, []);
         }
-        return this;
-    }
-    /**
-     * Add Key and Value to Object
-     * @param path
-     * @param $object
-     */
-    addToObject(path, $object) {
-        const storedValue = this.get(path, {});
-        if (typeof storedValue === "object") {
-            storedValue[$object.key] = $object.value;
-            this.set(path, storedValue);
+        else {
+            if (Array.isArray(storedValue)) {
+                return storedValue;
+            }
+            else {
+                if (forceToArrayIfNotArray) {
+                    this.set(path, [storedValue]);
+                }
+                else {
+                    throw new Error(`Path: "${path}" exist but it's not an array.`);
+                }
+            }
         }
-        return false;
-    }
-    /**
-     * ![Deprecated] Use .return();
-     * @returns {*}
-     * @deprecated
-     */
-    all() {
-        return this.data;
+        return this.get(path);
     }
     /**
      * Get path as instance of a ObjectCollection
@@ -465,15 +463,20 @@ class ObjectCollection {
      * this.clone is used;
      * @returns {*}
      */
-    return(clone) {
+    return(clone, cloneDeep = true) {
         if (clone === true) {
-            return this.cloneDeep();
-        }
-        else if (clone === "!deep") {
-            return this.clone();
+            return cloneDeep ? this.cloneDeep() : this.clone();
         }
         return this.data;
     }
 }
+/**
+ * Return 4.17.11
+ */
+ObjectCollection._ = lodash_1.default;
+/**
+ * @alias ObjectCollection._
+ */
+ObjectCollection.lodashVersion = "4.17.11";
 module.exports = ObjectCollection;
 //# sourceMappingURL=index.js.map

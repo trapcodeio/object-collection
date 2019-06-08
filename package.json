@@ -1,10 +1,10 @@
 {
   "name": "object-collection",
   "version": "1.0.1",
-  "description": "Lodash object helpers as a class.",
+  "description": "Break objects into pieces and control them from those pieces.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "ts-node-dev --transpile-only --respawn app.ts"
+    "test": "ts-node-dev --transpile-only --respawn test.ts"
   },
   "repository": "https://github.com/trapcodeio/object-collection.git",
   "author": "trapcodeio",
@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.133",
+    "chalk": "^2.4.2",
     "ts-node-dev": "^1.0.0-pre.39",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1"
