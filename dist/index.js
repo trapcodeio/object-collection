@@ -328,8 +328,8 @@ class ObjectCollection {
     /**
      * Set value to path of object.
      * @method
-     * @param {string} path
-     * @param {*} value
+     * @param {PathType} path
+     * @param {*} [value]
      * @return {*}
      */
     set(path, value) {
