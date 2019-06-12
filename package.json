@@ -4,6 +4,7 @@
   "description": "Break objects into pieces and control them from those pieces.",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc && browserify dist/index.js -o dist/index.cjs.js",
     "test": "ts-node-dev --transpile-only --respawn test.ts"
   },
   "repository": "https://github.com/trapcodeio/object-collection.git",
