@@ -62,6 +62,15 @@ class ObjectCollection {
         return new ObjectCollection(_.cloneDeep(this.get(path, $default)));
     }
 
+    /**
+     * Return path as an instance of object validator but clones the object
+     * This does not mutate main object in this.data
+     * @alias ObjectCollection.cloneInstanceFrom
+     */
+    public clonePath(path: PathType, $default?: any): ObjectCollection {
+        return this.cloneInstanceFrom(path, $default);
+    }
+
     public cloneThis(): ObjectCollection {
         return new ObjectCollection(this.return(true));
     }

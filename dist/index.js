@@ -42,6 +42,14 @@ class ObjectCollection {
     cloneInstanceFrom(path, $default) {
         return new ObjectCollection(lodash_1.default.cloneDeep(this.get(path, $default)));
     }
+    /**
+     * Return path as an instance of object validator but clones the object
+     * This does not mutate main object in this.data
+     * @alias ObjectCollection.cloneInstanceFrom
+     */
+    clonePath(path, $default) {
+        return this.cloneInstanceFrom(path, $default);
+    }
     cloneThis() {
         return new ObjectCollection(this.return(true));
     }
