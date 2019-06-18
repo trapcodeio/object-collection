@@ -5,11 +5,11 @@
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
-    "declaration": true,
+    "declaration": false,
     "outDir": "dist"
   },
   "lib": [
     "es2016"
   ],
-  "include": ["./**/*"],
+  "include": ["./**/*"]
 }
