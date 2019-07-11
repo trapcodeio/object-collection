@@ -558,8 +558,8 @@ class ObjectCollection {
      * Return Object to Json
      * @returns {string}
      */
-    public toJson() {
-        return JSON.parse(this.return());
+    public toJson(replacer = null, space = 2) {
+        return JSON.stringify(this.return(), replacer, space);
     }
 }
 

@@ -481,8 +481,8 @@ class ObjectCollection {
      * Return Object to Json
      * @returns {string}
      */
-    toJson() {
-        return JSON.parse(this.return());
+    toJson(replacer = null, space = 2) {
+        return JSON.stringify(this.return(), replacer, space);
     }
 }
 /**
