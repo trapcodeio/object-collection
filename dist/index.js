@@ -477,6 +477,13 @@ class ObjectCollection {
         }
         return this.data;
     }
+    /**
+     * Return Object to Json
+     * @returns {string}
+     */
+    toJson() {
+        return JSON.parse(this.return());
+    }
 }
 /**
  * Return 4.17.11

@@ -1,4 +1,5 @@
 import _ from "lodash";
+import {JsonFormatter} from "tslint/lib/formatters";
 
 type PathType = string | string[] | number;
 
@@ -551,6 +552,14 @@ class ObjectCollection {
         }
 
         return this.data;
+    }
+
+    /**
+     * Return Object to Json
+     * @returns {string}
+     */
+    public toJson() {
+        return JSON.parse(this.return());
     }
 }
 
