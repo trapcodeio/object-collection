@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.133",
+    "chalk": "^2.4.2",
     "ts-node-dev": "^1.0.0-pre.39",
     "tslint": "^5.17.0"
   }

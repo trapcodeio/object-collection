@@ -11,5 +11,6 @@
   "lib": [
     "es2016"
   ],
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "exclude": ["./test.ts"]
 }
