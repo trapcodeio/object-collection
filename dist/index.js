@@ -306,6 +306,13 @@ class ObjectCollection {
         return lodash_1.default.omit(this.data, paths);
     }
     /**
+     * Omit and return instance of ObjectCollection
+     * @returns {ObjectCollection}
+     */
+    forget(paths) {
+        return ObjectCollection.use(this.omit(paths));
+    }
+    /**
      * OmitBy
      * @see _.LodashOmitBy
      */
@@ -318,6 +325,14 @@ class ObjectCollection {
      */
     pick(paths) {
         return lodash_1.default.pick(this.data, paths);
+    }
+    /**
+     * Collect
+     * Returns instance of ObjectCollection
+     * @returns {ObjectCollection}
+     */
+    collect(paths) {
+        return ObjectCollection.use(this.pick(paths));
     }
     /**
      * PickBy
@@ -492,6 +507,6 @@ ObjectCollection._ = lodash_1.default;
 /**
  * @alias ObjectCollection._
  */
-ObjectCollection.lodashVersion = "4.17.11";
+ObjectCollection.lodashVersion = "4.17.14";
 module.exports = ObjectCollection;
 //# sourceMappingURL=index.js.map

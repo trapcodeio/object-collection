@@ -11,13 +11,11 @@
   "author": "trapcodeio",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.14"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.133",
-    "chalk": "^2.4.2",
     "ts-node-dev": "^1.0.0-pre.39",
-    "tslint": "^5.17.0",
-    "typescript": "^3.5.1"
+    "tslint": "^5.17.0"
   }
 }

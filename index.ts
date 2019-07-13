@@ -1,5 +1,4 @@
 import _ from "lodash";
-import {JsonFormatter} from "tslint/lib/formatters";
 
 type PathType = string | string[] | number;
 
@@ -16,7 +15,7 @@ class ObjectCollection {
     /**
      * @alias ObjectCollection._
      */
-    public static lodashVersion = "4.17.11";
+    public static lodashVersion = "4.17.14";
 
     /**
      * Return new instance of ObjectCollection;
@@ -362,6 +361,14 @@ class ObjectCollection {
     }
 
     /**
+     * Omit and return instance of ObjectCollection
+     * @returns {ObjectCollection}
+     */
+    public forget(paths: PathType): ObjectCollection {
+        return ObjectCollection.use(this.omit(paths));
+    }
+
+    /**
      * OmitBy
      * @see _.LodashOmitBy
      */
@@ -375,6 +382,15 @@ class ObjectCollection {
      */
     public pick(paths: PathType): object {
         return _.pick(this.data, paths);
+    }
+
+    /**
+     * Collect
+     * Returns instance of ObjectCollection
+     * @returns {ObjectCollection}
+     */
+    public collect(paths: PathType): ObjectCollection {
+        return ObjectCollection.use(this.pick(paths));
     }
 
     /**
