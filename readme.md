@@ -1,62 +1,71 @@
 # Javascript object collection.
 
-built from **Lodash**'s object functions api.
+ [**NPM**](https://www.npmjs.com/package/object-collection) |
+ [**YARN**](https://yarnpkg.com/en/package/object-collection)
 
-so instead of `_.extend(obj, {})`
-you do
-`data.extend({})`.
+Built from **Lodash**'s object functions api.
 
-**ALL mutable functions returns `this`**
+so instead of `_.extend(obj, data)` you do `data.extend({})`.
 
-Full Docs to out soon. :)
+All lodash helpers that **mutates** object returns `this`
+
+### When to use ObjectCollection.
+ObjectCollection is best used when accessing large objects **e.g** Api data, Your config object e.t.c
 
 ### Usage
 ```javascript
 const Obj = require("object-collection");
 
-let data = new Obj();
 // Creates empty object
+let data = new Obj();
 // => {}
 
+const User = {name: "John", age: 32, gender: "male"};
 
-data = new Obj({foo: "Bar", hello: "World"});
-// => {foo: "Bar", hello: "World"}
+// Use already existing object.
+const user = new Obj(User);
+// => {name: "John", age: 32, gender: 'male'}
 
-/**
-* Use is a static helper to create new collection instance
-*/
-data = data.use({foo: "Bar", hello: "World"});
-// => {foo: "Bar", hello: "World"}
+// OR Use is a static helper to create new collection instance
+const user = Obj.use(User);
+// => {name: "John", age: 32, gender: "male"}
 
 
-data.has("foo")
+user.has("name")
 // => true
 
-data.pick('foo');
-// => {foo: bar}
+user.pick(['name', 'age']);
+// => {name: "John", age: 32}
 
 
-data.set({message: {good: true, text: "welcome"}});
-// => {foo: "Bar", hello: "World", message: {good: true, text: "welcome"}}
+user.set({hobbies: ['code', 'eat', 'sleep']});
+// => {name: "John", age: 32, gender: "male", hobbies: ['code', 'eat', 'sleep']}
 ```
 
-After Message has been set we can still access it using `.path` function
+You get the idea right?
+All object helpers in `lodash` are available on `this`
+
+We also added a few more helpers. e.g
+
+If a path in your object holds an `object` we can access it as a collection using `.path` helper
 ```javascript
-data.path("message");
+// Add contact_details to User
+user.set('contact_details', {
+    address: 'No 1 Astro World', 
+    phone: '+123456789',
+    country: 'US',
+});
+
+user.path("contact_details");
 // Returns message value as a collection
 
-data.path("message").set({icon:"fa-smile"});
-// => {foo: "Bar", hello: "World", message: {
-//          good: true, text: "welcome", icon: "fa-smile"
-//      }}
-```
-    
-    
-`.path` is able to modify contents of main object unless cloned.
-```javascript
-data.path("message");
-// Returns message value as a collection
+user.get("contact_details.address");
+//OR
+user.path("contact_details").get('address');
+// => No 1 Astro World
 
-const $newObj = data.cloneInstanceFrom("message").set({icon:"fa-smile"});
-// => {ood: true, text: "welcome", icon: "fa-smile"}
+user.path("contact_details").pick(['phone', 'US'])
+// => {phone: '+123456789', country: 'US'}
 ```
+
+#### Full Docs coming soon
