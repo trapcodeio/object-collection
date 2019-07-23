@@ -124,7 +124,7 @@ class ObjectCollection {
      * Count Keys in Object
      */
     count() {
-        return lodash_1.default.size(this.data);
+        return this.keys().length;
     }
     /**
      * Defaults

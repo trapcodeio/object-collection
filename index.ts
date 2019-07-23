@@ -155,7 +155,7 @@ class ObjectCollection {
      * Count Keys in Object
      */
     public count() {
-        return _.size(this.data);
+        return this.keys().length;
     }
 
     /**
