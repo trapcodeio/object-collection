@@ -177,6 +177,24 @@ class ObjectCollection {
     }
 
     /**
+     * Check if path Exists in object
+     */
+    public exists(path: PathType) {
+        if (Array.isArray(path)) {
+
+            for (let i = 0; i < path.length; i++) {
+                if (!this.exists(path[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return typeof path === "string" && this.has(path);
+    }
+
+    /**
      * Extend Object object
      * @see _.LodashExtend
      */
@@ -562,6 +580,25 @@ class ObjectCollection {
      * @returns {*}
      */
     public return(clone?: string | boolean, cloneDeep: boolean = true): any {
+
+        if (clone === true) {
+            return cloneDeep ? this.cloneDeep() : this.clone();
+        }
+
+        return this.data;
+    }
+
+    /**
+     * Returns object being used.
+     *
+     * if clone is `true` this.cloneDeep is used.
+     * else if clone is string `!deep`
+     * this.clone is used;
+     *
+     * @alias ObjectCollection.return
+     * @returns {*}
+     */
+    public all(clone?: string | boolean, cloneDeep: boolean = true): any {
 
         if (clone === true) {
             return cloneDeep ? this.cloneDeep() : this.clone();
