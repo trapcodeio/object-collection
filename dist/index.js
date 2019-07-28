@@ -501,10 +501,7 @@ class ObjectCollection {
      * @returns {*}
      */
     return(clone, cloneDeep = true) {
-        if (clone === true) {
-            return cloneDeep ? this.cloneDeep() : this.clone();
-        }
-        return this.data;
+        return this.all(clone, cloneDeep);
     }
     /**
      * Returns object being used.
@@ -531,7 +528,7 @@ class ObjectCollection {
     }
     /**
      * Remove null values from object
-     * @param returnThis
+     * @param {boolean} returnThis
      */
     removeNull(returnThis = false) {
         const without = this.pickBy((value) => {

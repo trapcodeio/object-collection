@@ -581,11 +581,8 @@ class ObjectCollection {
      */
     public return(clone?: string | boolean, cloneDeep: boolean = true): any {
 
-        if (clone === true) {
-            return cloneDeep ? this.cloneDeep() : this.clone();
-        }
+        return this.all(clone, cloneDeep)
 
-        return this.data;
     }
 
     /**
@@ -617,9 +614,9 @@ class ObjectCollection {
 
     /**
      * Remove null values from object
-     * @param returnThis
+     * @param {boolean} returnThis
      */
-    public removeNull(returnThis: boolean = false) {
+    public removeNull(returnThis: boolean = false): object | ObjectCollection {
         const without = this.pickBy((value) => {
             return value !== null && value !== undefined;
         });
