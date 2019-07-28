@@ -390,7 +390,7 @@ class ObjectCollection {
      * OmitBy
      * @see _.LodashOmitBy
      */
-    public omitBy(predicate: () => any): object {
+    public omitBy(predicate: any): object {
         return _.omitBy(this.data, predicate);
     }
 
@@ -415,7 +415,7 @@ class ObjectCollection {
      * PickBy
      * @see _.LodashPickBy
      */
-    public pickBy(predicate: () => any): object {
+    public pickBy(predicate: any): object {
         return _.pickBy(this.data, predicate);
     }
 
@@ -613,6 +613,18 @@ class ObjectCollection {
      */
     public toJson(replacer = null, space = 2) {
         return JSON.stringify(this.return(), replacer, space);
+    }
+
+    /**
+     * Remove null values from object
+     * @param returnThis
+     */
+    public removeNull(returnThis: boolean = false) {
+        const without = this.pickBy((value) => {
+            return value !== null && value !== undefined;
+        });
+
+        return returnThis ? new ObjectCollection(without) : without;
     }
 }
 

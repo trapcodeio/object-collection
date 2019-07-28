@@ -529,6 +529,16 @@ class ObjectCollection {
     toJson(replacer = null, space = 2) {
         return JSON.stringify(this.return(), replacer, space);
     }
+    /**
+     * Remove null values from object
+     * @param returnThis
+     */
+    removeNull(returnThis = false) {
+        const without = this.pickBy((value) => {
+            return value !== null && value !== undefined;
+        });
+        return returnThis ? new ObjectCollection(without) : without;
+    }
 }
 /**
  * Return 4.17.11
