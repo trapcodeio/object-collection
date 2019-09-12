@@ -11,13 +11,14 @@
   "author": "trapcodeio",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.133",
+    "@types/lodash": "^4.14.138",
     "chalk": "^2.4.2",
-    "ts-node-dev": "^1.0.0-pre.39",
-    "tslint": "^5.17.0"
+    "ts-node-dev": "^1.0.0-pre.42",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
   },
   "keywords": [
     "object-collection",

@@ -147,8 +147,8 @@ class ObjectCollection {
      */
     exists(path) {
         if (Array.isArray(path)) {
-            for (let i = 0; i < path.length; i++) {
-                if (!this.exists(path[i])) {
+            for (const key of path) {
+                if (!this.exists(key)) {
                     return false;
                 }
             }
@@ -371,10 +371,7 @@ class ObjectCollection {
      */
     set(path, value) {
         if (typeof path === "object") {
-            const keys = Object.keys(path);
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
+            for (const key of Object.keys(path)) {
                 this.set(key, path[key]);
             }
         }
@@ -382,6 +379,10 @@ class ObjectCollection {
             lodash_1.default.set(this.data, path, value);
         }
         return this;
+    }
+    setAndGet(path, value) {
+        this.set(path, value);
+        return value;
     }
     /**
      * SetWith

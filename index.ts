@@ -182,8 +182,8 @@ class ObjectCollection {
     public exists(path: PathType) {
         if (Array.isArray(path)) {
 
-            for (let i = 0; i < path.length; i++) {
-                if (!this.exists(path[i])) {
+            for (const key of path) {
+                if (!this.exists(key)) {
                     return false;
                 }
             }
@@ -436,19 +436,19 @@ class ObjectCollection {
      */
     public set(path: PathType | object, value?: any): this {
         if (typeof path === "object") {
-
-            const keys = Object.keys(path);
-            // tslint:disable-next-line:prefer-for-of
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
+            for (const key of Object.keys(path)) {
                 this.set(key, path[key]);
             }
-
         } else {
             _.set(this.data, path, value);
         }
 
         return this;
+    }
+
+    public setAndGet(path: PathType | object, value?: any): any {
+        this.set(path, value);
+        return value;
     }
 
     /**
@@ -581,7 +581,7 @@ class ObjectCollection {
      */
     public return(clone?: string | boolean, cloneDeep: boolean = true): any {
 
-        return this.all(clone, cloneDeep)
+        return this.all(clone, cloneDeep);
 
     }
 
