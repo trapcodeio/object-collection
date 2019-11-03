@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 type PathType = string | string[] | number;
+type DataType = object | any[];
 
 /**
  * ObjectCollectionClass
@@ -15,26 +16,26 @@ class ObjectCollection {
     /**
      * @alias ObjectCollection._
      */
-    public static lodashVersion = "4.17.14";
+    public static lodashVersion = "4.17.15";
 
     /**
      * Return new instance of ObjectCollection;
      * @param data
      */
-    public static use(data: object = {}): ObjectCollection {
+    public static use(data: DataType): ObjectCollection {
         return new ObjectCollection(data);
     }
 
     /**
      * Data being modified.
      */
-    protected data: object;
+    protected data: DataType;
 
     /**
      * Object to use or a new object will be used.
      * @param data
      */
-    constructor(data: object = {}) {
+    constructor(data: DataType) {
         if (data === null || typeof data !== "object") {
             throw new Error("Object expected but got typeof " + typeof data + " instead");
         }
@@ -154,8 +155,17 @@ class ObjectCollection {
     /**
      * Count Keys in Object
      */
-    public count() {
-        return this.keys().length;
+    public count(): number {
+        const data = Array.isArray(this.data) ? this.data : this.keys();
+        return data.length;
+    }
+
+    /**
+     * Count Keys in Object
+     * @alias this.count
+     */
+    public length(): number {
+        return this.count();
     }
 
     /**
@@ -191,7 +201,7 @@ class ObjectCollection {
             return true;
         }
 
-        return typeof path === "string" && this.has(path);
+        return this.has(path);
     }
 
     /**
@@ -309,7 +319,7 @@ class ObjectCollection {
      *  @see _.LodashInvertBy
      */
     public invertBy(iteratee: () => any): any {
-        return _.invertBy(iteratee);
+        return _.invertBy(this.data, iteratee);
     }
 
     /**
@@ -609,7 +619,7 @@ class ObjectCollection {
      * @returns {string}
      */
     public toJson(replacer = null, space = 2) {
-        return JSON.stringify(this.return(), replacer, space);
+        return JSON.stringify(this.all(), replacer, space);
     }
 
     /**

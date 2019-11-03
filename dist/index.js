@@ -11,7 +11,7 @@ class ObjectCollection {
      * Object to use or a new object will be used.
      * @param data
      */
-    constructor(data = {}) {
+    constructor(data) {
         if (data === null || typeof data !== "object") {
             throw new Error("Object expected but got typeof " + typeof data + " instead");
         }
@@ -22,7 +22,7 @@ class ObjectCollection {
      * Return new instance of ObjectCollection;
      * @param data
      */
-    static use(data = {}) {
+    static use(data) {
         return new ObjectCollection(data);
     }
     /**
@@ -124,7 +124,15 @@ class ObjectCollection {
      * Count Keys in Object
      */
     count() {
-        return this.keys().length;
+        const data = Array.isArray(this.data) ? this.data : this.keys();
+        return data.length;
+    }
+    /**
+     * Count Keys in Object
+     * @alias this.count
+     */
+    length() {
+        return this.count();
     }
     /**
      * Defaults
@@ -154,7 +162,7 @@ class ObjectCollection {
             }
             return true;
         }
-        return typeof path === "string" && this.has(path);
+        return this.has(path);
     }
     /**
      * Extend Object object
@@ -259,7 +267,7 @@ class ObjectCollection {
      *  @see _.LodashInvertBy
      */
     invertBy(iteratee) {
-        return lodash_1.default.invertBy(iteratee);
+        return lodash_1.default.invertBy(this.data, iteratee);
     }
     /**
      * Invoke
@@ -525,7 +533,7 @@ class ObjectCollection {
      * @returns {string}
      */
     toJson(replacer = null, space = 2) {
-        return JSON.stringify(this.return(), replacer, space);
+        return JSON.stringify(this.all(), replacer, space);
     }
     /**
      * Remove null values from object
@@ -545,6 +553,6 @@ ObjectCollection._ = lodash_1.default;
 /**
  * @alias ObjectCollection._
  */
-ObjectCollection.lodashVersion = "4.17.14";
+ObjectCollection.lodashVersion = "4.17.15";
 module.exports = ObjectCollection;
 //# sourceMappingURL=index.js.map
