@@ -11,7 +11,7 @@ class ObjectCollection {
      * Object to use or a new object will be used.
      * @param data
      */
-    constructor(data) {
+    constructor(data = {}) {
         if (data === null || typeof data !== "object") {
             throw new Error("Object expected but got typeof " + typeof data + " instead");
         }
@@ -22,7 +22,7 @@ class ObjectCollection {
      * Return new instance of ObjectCollection;
      * @param data
      */
-    static use(data) {
+    static use(data = {}) {
         return new ObjectCollection(data);
     }
     /**
