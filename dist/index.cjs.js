@@ -125,7 +125,15 @@ class ObjectCollection {
      * Count Keys in Object
      */
     count() {
-        return this.keys().length;
+        const data = Array.isArray(this.data) ? this.data : this.keys();
+        return data.length;
+    }
+    /**
+     * Count Keys in Object
+     * @alias this.count
+     */
+    length() {
+        return this.count();
     }
     /**
      * Defaults
@@ -155,7 +163,7 @@ class ObjectCollection {
             }
             return true;
         }
-        return typeof path === "string" && this.has(path);
+        return this.has(path);
     }
     /**
      * Extend Object object
@@ -260,7 +268,7 @@ class ObjectCollection {
      *  @see _.LodashInvertBy
      */
     invertBy(iteratee) {
-        return lodash_1.default.invertBy(iteratee);
+        return lodash_1.default.invertBy(this.data, iteratee);
     }
     /**
      * Invoke
@@ -526,7 +534,7 @@ class ObjectCollection {
      * @returns {string}
      */
     toJson(replacer = null, space = 2) {
-        return JSON.stringify(this.return(), replacer, space);
+        return JSON.stringify(this.all(), replacer, space);
     }
     /**
      * Remove null values from object
@@ -546,7 +554,7 @@ ObjectCollection._ = lodash_1.default;
 /**
  * @alias ObjectCollection._
  */
-ObjectCollection.lodashVersion = "4.17.14";
+ObjectCollection.lodashVersion = "4.17.15";
 module.exports = ObjectCollection;
 
 },{"lodash":2}],2:[function(require,module,exports){
