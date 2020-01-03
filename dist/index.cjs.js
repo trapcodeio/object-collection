@@ -31,8 +31,14 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    newInstanceFrom(path, $default) {
-        return new ObjectCollection(this.get(path, $default));
+    newInstanceFrom(path, $default = {}) {
+        let pathValue = this.get(path);
+        // Set path value to $default if value is undefined.
+        if (pathValue === undefined) {
+            pathValue = $default;
+            this.set(path, pathValue);
+        }
+        return new ObjectCollection(pathValue);
     }
     /**
      * Return path as an instance of object validator but clones the object
@@ -40,7 +46,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    cloneInstanceFrom(path, $default) {
+    cloneInstanceFrom(path, $default = {}) {
         return new ObjectCollection(lodash_1.default.cloneDeep(this.get(path, $default)));
     }
     /**

@@ -49,8 +49,15 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom(path: PathType, $default?: any): ObjectCollection {
-        return new ObjectCollection(this.get(path, $default));
+    public newInstanceFrom(path: PathType, $default: any = {}): ObjectCollection {
+        let pathValue = this.get(path);
+
+        // Set path value to $default if value is undefined.
+        if (pathValue === undefined) {
+            pathValue = $default;
+            this.set(path, pathValue);
+        }
+        return new ObjectCollection(pathValue);
     }
 
     /**
@@ -59,7 +66,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom(path: PathType, $default?: any): ObjectCollection {
+    public cloneInstanceFrom(path: PathType, $default: any = {}): ObjectCollection {
         return new ObjectCollection(_.cloneDeep(this.get(path, $default)));
     }
 
