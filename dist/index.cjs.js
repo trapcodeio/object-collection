@@ -20,6 +20,13 @@ class ObjectCollection {
         return this;
     }
     /**
+     * Get Lodash v 4.17.11
+     * @type {LoDashStatic}
+     */
+    static getLodash() {
+        return lodash_1.default;
+    }
+    /**
      * Return new instance of ObjectCollection;
      * @param data
      */
@@ -395,6 +402,11 @@ class ObjectCollection {
         }
         return this;
     }
+    /**
+     * Set value and get value returned.
+     * @param path
+     * @param value
+     */
     setAndGet(path, value) {
         this.set(path, value);
         return value;
@@ -543,6 +555,14 @@ class ObjectCollection {
         return JSON.stringify(this.all(), replacer, space);
     }
     /**
+     * Replace main data with new data.
+     * @param data
+     */
+    replaceData(data) {
+        this.data = data;
+        return this;
+    }
+    /**
      * Remove null values from object
      * @param {boolean} returnThis
      */
@@ -550,11 +570,13 @@ class ObjectCollection {
         const without = this.pickBy((value) => {
             return value !== null && value !== undefined;
         });
-        return returnThis ? new ObjectCollection(without) : without;
+        return returnThis ? this.replaceData(without) : without;
     }
 }
 /**
  * Return 4.17.11
+ * @deprecated
+ * Use .getLodash instead
  */
 ObjectCollection._ = lodash_1.default;
 /**

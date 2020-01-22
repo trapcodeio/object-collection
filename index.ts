@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, {LoDashStatic} from "lodash";
 
 type PathType = string | string[] | number;
 type DataType = object | any[];
@@ -10,6 +10,8 @@ class ObjectCollection {
 
     /**
      * Return 4.17.11
+     * @deprecated
+     * Use .getLodash instead
      */
     public static _ = _;
 
@@ -17,6 +19,14 @@ class ObjectCollection {
      * @alias ObjectCollection._
      */
     public static lodashVersion = "4.17.15";
+
+    /**
+     * Get Lodash v 4.17.11
+     * @type {LoDashStatic}
+     */
+    public static getLodash(): LoDashStatic {
+        return _;
+    }
 
     /**
      * Return new instance of ObjectCollection;
@@ -463,6 +473,11 @@ class ObjectCollection {
         return this;
     }
 
+    /**
+     * Set value and get value returned.
+     * @param path
+     * @param value
+     */
     public setAndGet(path: PathType | object, value?: any): any {
         this.set(path, value);
         return value;
@@ -630,6 +645,15 @@ class ObjectCollection {
     }
 
     /**
+     * Replace main data with new data.
+     * @param data
+     */
+    public replaceData(data) {
+        this.data = data;
+        return this;
+    }
+
+    /**
      * Remove null values from object
      * @param {boolean} returnThis
      */
@@ -638,7 +662,7 @@ class ObjectCollection {
             return value !== null && value !== undefined;
         });
 
-        return returnThis ? new ObjectCollection(without) : without;
+        return returnThis ? this.replaceData(without) : without;
     }
 }
 
