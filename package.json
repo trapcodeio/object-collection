@@ -3,6 +3,7 @@
   "version": "1.0.22",
   "description": "Break objects into pieces and control them from those pieces.",
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "ts-node-dev --transpile-only --respawn test.ts"

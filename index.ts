@@ -342,7 +342,7 @@ class ObjectCollection {
      * Invoke
      * @see _.LodashInvoke
      */
-    public invoke(path: PathType, ...args): any {
+    public invoke(path: PathType, ...args: any[]): any {
         return _.invoke(this.data, path, ...args);
     }
 
@@ -391,7 +391,7 @@ class ObjectCollection {
      * MergeWith
      * @see _.LodashMergeWith
      */
-    public mergeWith(source: any, customizer): this {
+    public mergeWith(source: any, customizer: any): this {
         _.mergeWith(this.data, source, customizer);
         return this;
     }
@@ -463,6 +463,7 @@ class ObjectCollection {
     public set(path: PathType | object, value?: any): this {
         if (typeof path === "object") {
             for (const key of Object.keys(path)) {
+                // @ts-ignore
                 this.set(key, path[key]);
             }
         } else {
@@ -647,7 +648,7 @@ class ObjectCollection {
      * Replace main data with new data.
      * @param data
      */
-    public replaceData(data) {
+    public replaceData(data: any) {
         this.data = data;
         return this;
     }
@@ -657,7 +658,7 @@ class ObjectCollection {
      * @param {boolean} returnThis
      */
     public removeNull(returnThis: boolean = false): object | ObjectCollection {
-        const without = this.pickBy((value) => {
+        const without = this.pickBy((value: any) => {
             return value !== null && value !== undefined;
         });
 
