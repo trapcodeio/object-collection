@@ -1,4 +1,4 @@
-import _ from "lodash-es";
+import _ = require("lodash");
 declare type PathType = string | string[] | number;
 declare type DataType = object | any[];
 /**
@@ -10,7 +10,7 @@ declare class ObjectCollection {
      * @deprecated
      * Use .getLodash instead
      */
-    static _: typeof _;
+    static _: _.LoDashStatic;
     /**
      * @alias ObjectCollection._
      */
@@ -18,7 +18,7 @@ declare class ObjectCollection {
     /**
      * Get Lodash v 4.17.11
      */
-    static getLodash(): typeof _;
+    static getLodash(): _.LoDashStatic;
     /**
      * Return new instance of ObjectCollection;
      * @param data

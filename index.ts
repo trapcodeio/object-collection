@@ -1,4 +1,4 @@
-import _ from "lodash-es";
+import _ = require("lodash");
 
 type PathType = string | string[] | number;
 type DataType = object | any[];
