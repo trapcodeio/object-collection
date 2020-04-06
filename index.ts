@@ -1,4 +1,4 @@
-import _, {LoDashStatic} from "lodash";
+import _ from "lodash-es";
 
 type PathType = string | string[] | number;
 type DataType = object | any[];
@@ -22,9 +22,8 @@ class ObjectCollection {
 
     /**
      * Get Lodash v 4.17.11
-     * @type {LoDashStatic}
      */
-    public static getLodash(): LoDashStatic {
+    public static getLodash() {
         return _;
     }
 
