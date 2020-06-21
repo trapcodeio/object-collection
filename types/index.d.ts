@@ -379,9 +379,20 @@ declare class ObjectCollection {
      */
     replaceData(data: any): this;
     /**
-     * Remove null values from object
+     * Use removeNullOrUndefined | allWithoutNullOrUndefined
      * @param {boolean} returnThis
+     * @deprecated
      */
     removeNull(returnThis?: boolean): object | ObjectCollection;
+    /**
+     * Remove null values from object
+     * @returns {ObjectCollection}
+     */
+    removeNullOrUndefined(): ObjectCollection;
+    /**
+     * Remove null values from object
+     * @returns {{}}
+     */
+    allWithoutNullOrUndefined(): object;
 }
 export = ObjectCollection;

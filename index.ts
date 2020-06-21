@@ -612,9 +612,7 @@ class ObjectCollection {
      * @returns {*}
      */
     public return(clone?: string | boolean, cloneDeep: boolean = true): any {
-
         return this.all(clone, cloneDeep);
-
     }
 
     /**
@@ -654,15 +652,31 @@ class ObjectCollection {
     }
 
     /**
-     * Remove null values from object
+     * Use removeNullOrUndefined | allWithoutNullOrUndefined
      * @param {boolean} returnThis
+     * @deprecated
      */
     public removeNull(returnThis: boolean = false): object | ObjectCollection {
-        const without = this.pickBy((value: any) => {
+        const without = this.allWithoutNullOrUndefined();
+        return returnThis ? this.replaceData(without) : without;
+    }
+
+    /**
+     * Remove null values from object
+     * @returns {ObjectCollection}
+     */
+    public removeNullOrUndefined(): ObjectCollection {
+        return this.replaceData(this.allWithoutNullOrUndefined())
+    }
+
+    /**
+     * Remove null values from object
+     * @returns {{}}
+     */
+    public allWithoutNullOrUndefined(): object {
+        return this.pickBy((value: any) => {
             return value !== null && value !== undefined;
         });
-
-        return returnThis ? this.replaceData(without) : without;
     }
 }
 
