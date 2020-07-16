@@ -12,8 +12,8 @@
   "author": "trapcodeio",
   "license": "MIT",
   "dependencies": {
-    "@types/lodash": "^4.14.149",
-    "lodash": "^4.17.15"
+    "@types/lodash": "^4.14.157",
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "chalk": "^4.0.0",
