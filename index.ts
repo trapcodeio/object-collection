@@ -300,6 +300,22 @@ class ObjectCollection {
     }
 
     /**
+     * Call path in object if value is a function.
+     * @method
+     * @param {string|string[]} path
+     * @param args
+     * @return {*}
+     */
+    public call(path: PathType | number, args?: any[]): any {
+        const value: (...args: any[]) => void | any  = this.get(path)
+        if(typeof value !== 'function'){
+            throw Error(`Value of path {${path}} is not a function`)
+        }
+        // @ts-ignore
+        return value(...args)
+    }
+
+    /**
      * Has path in object
      * @method
      * @param {string|string[]} path

@@ -174,6 +174,14 @@ declare class ObjectCollection {
      */
     get(path: PathType | number, $default?: any): any;
     /**
+     * Call path in object if value is a function.
+     * @method
+     * @param {string|string[]} path
+     * @param args
+     * @return {*}
+     */
+    call(path: PathType | number, args?: any[]): any;
+    /**
      * Has path in object
      * @method
      * @param {string|string[]} path
