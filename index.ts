@@ -306,13 +306,21 @@ class ObjectCollection {
      * @param args
      * @return {*}
      */
-    public call(path: PathType | number, args?: any[]): any {
-        const value: (...args: any[]) => void | any  = this.get(path)
-        if(typeof value !== 'function'){
+    public call(path: PathType | number, args?: any): any {
+        const value: (...args: any[]) => void | any = this.get(path)
+        if (typeof value !== 'function') {
             throw Error(`Value of path {${path}} is not a function`)
         }
-        // @ts-ignore
-        return value(...args)
+
+        if (args) {
+            if (!Array.isArray(args))
+                args = [args];
+
+            // @ts-ignore
+            return value(...args)
+        } else {
+            return value()
+        }
     }
 
     /**

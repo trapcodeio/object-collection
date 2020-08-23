@@ -180,7 +180,7 @@ declare class ObjectCollection {
      * @param args
      * @return {*}
      */
-    call(path: PathType | number, args?: any[]): any;
+    call(path: PathType | number, args?: any): any;
     /**
      * Has path in object
      * @method
