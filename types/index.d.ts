@@ -52,6 +52,9 @@ declare class ObjectCollection {
      * @alias ObjectCollection.cloneInstanceFrom
      */
     clonePath(path: PathType, $default?: any): ObjectCollection;
+    /**
+     * Clone this data
+     */
     cloneThis(): ObjectCollection;
     /**
      * Assign to object
@@ -287,6 +290,12 @@ declare class ObjectCollection {
      * @return {*}
      */
     set(path: PathType | object, value?: any): this;
+    /**
+     * Set Paths To Same Value
+     * @param paths
+     * @param value
+     */
+    setPathsToSameValue(paths: (string | number)[], value: any): this;
     /**
      * Set value and get value returned.
      * @param path

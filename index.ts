@@ -66,6 +66,7 @@ class ObjectCollection {
             pathValue = $default;
             this.set(path, pathValue);
         }
+
         return new ObjectCollection(pathValue);
     }
 
@@ -88,6 +89,9 @@ class ObjectCollection {
         return this.cloneInstanceFrom(path, $default);
     }
 
+    /**
+     * Clone this data
+     */
     public cloneThis(): ObjectCollection {
         return new ObjectCollection(this.return(true));
     }
@@ -495,6 +499,21 @@ class ObjectCollection {
         }
 
         return this;
+    }
+
+    /**
+     * Set Paths To Same Value
+     * @param paths
+     * @param value
+     */
+    public setPathsToSameValue(paths: (string | number)[], value: any): this {
+        if (!Array.isArray(paths))
+            throw TypeError(`setPathsToSameValue path must be an array`);
+
+        for (const path of paths)
+            this.set(path, value);
+
+        return this
     }
 
     /**
