@@ -411,5 +411,25 @@ declare class ObjectCollection {
      * @returns {{}}
      */
     allWithoutNullOrUndefined(): object;
+    /**
+     * Get an object that sync's with a paths value.
+     * @param path
+     * @param def
+     */
+    sync<SyncReturnType = any>(path: PathType, def?: any): {
+        readonly sync: SyncReturnType;
+        changeTo(value: any): any;
+    };
+    /**
+     * Same with .sync but includes initial value;
+     * @param path
+     * @param def
+     */
+    syncWithInitial<SyncReturnType = any>(path: PathType, def?: any): {
+        initial: any;
+        readonly sync: SyncReturnType;
+        readonly hasChanged: boolean;
+        changeTo(value: any): any;
+    };
 }
 export = ObjectCollection;

@@ -721,6 +721,46 @@ class ObjectCollection {
             return value !== null && value !== undefined;
         });
     }
+
+    /**
+     * Get an object that sync's with a paths value.
+     * @param path
+     * @param def
+     */
+    public sync<SyncReturnType = any>(path: PathType, def?: any) {
+        const self = this;
+        return {
+            get sync(): SyncReturnType {
+                return self.get(path, def)
+            },
+            changeTo(value: any) {
+                self.set(path, value);
+                return this;
+            }
+        };
+    }
+
+    /**
+     * Same with .sync but includes initial value;
+     * @param path
+     * @param def
+     */
+    public syncWithInitial<SyncReturnType = any>(path: PathType, def?: any) {
+        const self = this;
+        return {
+            initial: self.get(path, def),
+            get sync(): SyncReturnType {
+                return self.get(path, def)
+            },
+            get hasChanged(): boolean {
+                return this.sync !== this.initial;
+            },
+            changeTo(value: any) {
+                self.set(path, value);
+                return this;
+            }
+        };
+    }
 }
 
 export = ObjectCollection;
