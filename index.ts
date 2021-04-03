@@ -1,7 +1,7 @@
 import _ = require("lodash");
 
 type PathType = string | string[] | number;
-type DataType = object | any[];
+type DataType = Record<string, any>;
 
 /**
  * ObjectCollectionClass
@@ -469,8 +469,8 @@ class ObjectCollection {
      * PickBy
      * @see _.LodashPickBy
      */
-    public pickBy(predicate: any): object {
-        return _.pickBy(this.data, predicate);
+    public pickBy<T = DataType>(predicate: (value: any, key: string) => boolean): T {
+        return _.pickBy(this.data, predicate) as T;
     }
 
     /**
@@ -486,19 +486,33 @@ class ObjectCollection {
      * @method
      * @param {PathType} path
      * @param {*} [value]
-     * @return {*}
+     * @param definedOnly
      */
-    public set(path: PathType | object, value?: any): this {
+    public set(path: PathType | object, value?: any, definedOnly: boolean = false): this {
         if (typeof path === "object") {
             for (const key of Object.keys(path)) {
                 // @ts-ignore
                 this.set(key, path[key]);
             }
         } else {
-            _.set(this.data, path, value);
+            if (definedOnly && (value === undefined || value === null)) {
+                return this;
+            } else {
+                _.set(this.data, path, value);
+            }
         }
 
         return this;
+    }
+
+    /**
+     * Set value to path of object only if value is defined.
+     * @method
+     * @param {PathType} path
+     * @param {*} [value]
+     */
+    public setDefined(path: PathType | object, value?: any): this {
+        return this.set(path, value, true);
     }
 
     /**
@@ -716,8 +730,18 @@ class ObjectCollection {
      * Remove null values from object
      * @returns {{}}
      */
-    public allWithoutNullOrUndefined(): object {
-        return this.pickBy((value: any) => {
+    public allWithoutNullOrUndefined<T = DataType>(): T {
+        return this.pickBy<T>((value: any) => {
+            return value !== null && value !== undefined;
+        });
+    }
+
+    /**
+     * Remove null values from object
+     * @returns {{}}
+     */
+    public defined<T = DataType>(): T {
+        return this.pickBy<T>((value: any) => {
             return value !== null && value !== undefined;
         });
     }
