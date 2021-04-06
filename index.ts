@@ -785,6 +785,14 @@ class ObjectCollection {
             }
         };
     }
+
+    /**
+     * Compute Data
+     * @param fn
+     */
+    public compute<Instance extends ObjectCollection>(this: Instance, fn: (o: Instance) => Instance): Instance {
+        return fn(this)
+    }
 }
 
 export = ObjectCollection;
