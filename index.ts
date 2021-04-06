@@ -7,7 +7,6 @@ type DataType = Record<string, any>;
  * ObjectCollectionClass
  */
 class ObjectCollection {
-
     /**
      * Return 4.17.11
      * @deprecated
@@ -211,7 +210,6 @@ class ObjectCollection {
      */
     public exists(path: PathType) {
         if (Array.isArray(path)) {
-
             for (const key of path) {
                 if (!this.exists(key)) {
                     return false;
@@ -311,19 +309,18 @@ class ObjectCollection {
      * @return {*}
      */
     public call(path: PathType | number, args?: any): any {
-        const value: (...args: any[]) => void | any = this.get(path)
-        if (typeof value !== 'function') {
-            throw Error(`Value of path {${path}} is not a function`)
+        const value: (...args: any[]) => void | any = this.get(path);
+        if (typeof value !== "function") {
+            throw Error(`Value of path {${path}} is not a function`);
         }
 
         if (args) {
-            if (!Array.isArray(args))
-                args = [args];
+            if (!Array.isArray(args)) args = [args];
 
             // @ts-ignore
-            return value(...args)
+            return value(...args);
         } else {
-            return value()
+            return value();
         }
     }
 
@@ -524,10 +521,9 @@ class ObjectCollection {
         if (!Array.isArray(paths))
             throw TypeError(`setPathsToSameValue path must be an array`);
 
-        for (const path of paths)
-            this.set(path, value);
+        for (const path of paths) this.set(path, value);
 
-        return this
+        return this;
     }
 
     /**
@@ -683,7 +679,6 @@ class ObjectCollection {
      * @returns {*}
      */
     public all(clone?: string | boolean, cloneDeep: boolean = true): any {
-
         if (clone === true) {
             return cloneDeep ? this.cloneDeep() : this.clone();
         }
@@ -723,7 +718,7 @@ class ObjectCollection {
      * @returns {ObjectCollection}
      */
     public removeNullOrUndefined(): ObjectCollection {
-        return this.replaceData(this.allWithoutNullOrUndefined())
+        return this.replaceData(this.allWithoutNullOrUndefined());
     }
 
     /**
@@ -755,7 +750,7 @@ class ObjectCollection {
         const self = this;
         return {
             get sync(): SyncReturnType {
-                return self.get(path, def)
+                return self.get(path, def);
             },
             changeTo(value: any) {
                 self.set(path, value);
@@ -774,7 +769,7 @@ class ObjectCollection {
         return {
             initial: self.get(path, def),
             get sync(): SyncReturnType {
-                return self.get(path, def)
+                return self.get(path, def);
             },
             get hasChanged(): boolean {
                 return this.sync !== this.initial;
@@ -788,10 +783,22 @@ class ObjectCollection {
 
     /**
      * Compute Data
-     * @param fn
      */
-    public compute<Instance extends ObjectCollection>(this: Instance, fn: (o: Instance) => Instance): Instance {
-        return fn(this)
+    public compute<Instance extends ObjectCollection>(
+        this: Instance,
+        fn: (o: Instance) => Instance
+    ): Instance {
+        return fn(this);
+    }
+
+    /**
+     * Compute Data Async
+     */
+    public computeAsync<Instance extends ObjectCollection>(
+        this: Instance,
+        fn: (o: Instance) => Promise<Instance>
+    ): Promise<Instance> {
+        return fn(this);
     }
 }
 
