@@ -8,7 +8,7 @@ type DataType = Record<string, any>;
  */
 class ObjectCollection {
     /**
-     * Return 4.17.11
+     * Return 4.17.21
      * @deprecated
      * Use .getLodash instead
      */
@@ -17,7 +17,7 @@ class ObjectCollection {
     /**
      * @alias ObjectCollection._
      */
-    public static lodashVersion = "4.17.15";
+    public static lodashVersion = "4.17.21";
 
     /**
      * Get Lodash v 4.17.11
@@ -794,7 +794,7 @@ class ObjectCollection {
     /**
      * Compute Data Async
      */
-    public computeAsync<Instance extends ObjectCollection>(
+    public async computeAsync<Instance extends ObjectCollection>(
         this: Instance,
         fn: (o: Instance) => Promise<Instance>
     ): Promise<Instance> {
