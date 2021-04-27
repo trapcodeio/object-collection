@@ -37,7 +37,7 @@ class ObjectCollection {
     /**
      * Data being modified.
      */
-    protected data: DataType;
+    public data: DataType;
 
     /**
      * Object to use or a new object will be used.
