@@ -373,7 +373,7 @@ class ObjectCollection<
      * @param {string|string[]} path
      *
      * @see _.LodashHas
-     * @return {boolean}
+     * @return {boolean}.
      */
     public has(path: PathType) {
         return _.has(this.data, path);

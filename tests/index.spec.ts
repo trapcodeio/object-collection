@@ -1,7 +1,7 @@
 import test from "japa";
-import ObjectCollection = require("../index");
 import dummy from "./dummy.json";
 import { Obj } from "../exports";
+import ObjectCollection = require("../index");
 
 test.group("Static Functions", () => {
     test("use():", (assert) => {
@@ -488,7 +488,6 @@ test.group("Public Functions", () => {
         assert.isTrue(obj.has("a"));
         assert.isTrue(obj.has("b"));
         assert.isTrue(obj.has("c.d"));
-
         assert.isFalse(obj.has("d"));
     });
 });
