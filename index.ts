@@ -1,54 +1,46 @@
-import _ = require("lodash");
+import _ from "lodash";
 
-type PathType = string | string[] | number;
-type DataType = Record<string, any>;
+type PathType<T = string> = T | string | string[] | number | symbol;
 
 /**
  * ObjectCollectionClass
  */
-class ObjectCollection {
-    /**
-     * Return 4.17.21
-     * @deprecated
-     * Use .getLodash instead
-     */
-    public static _ = _;
-
-    /**
-     * @alias ObjectCollection._
-     */
-    public static lodashVersion = "4.17.21";
-
-    /**
-     * Get Lodash v 4.17.11
-     */
-    public static getLodash() {
-        return _;
-    }
-
+class ObjectCollection<
+    DataType extends Record<string, any> = any,
+    CustomType = Record<string, any>
+> {
     /**
      * Return new instance of ObjectCollection;
      * @param data
      */
-    public static use(data: DataType = {}): ObjectCollection {
-        return new ObjectCollection(data);
+    public static use<DT>(data?: DT) {
+        if (!data) data = {} as DT;
+        return new ObjectCollection<DT>(data);
+    }
+
+    /**
+     * Return new cloned instance of ObjectCollection;
+     * @param data
+     */
+    public static useCloned<DT>(data: DT) {
+        return this.use<DT>(_.cloneDeep(data));
     }
 
     /**
      * Data being modified.
      */
-    public data: DataType;
+    public data: DataType & CustomType;
 
     /**
      * Object to use or a new object will be used.
      * @param data
      */
-    constructor(data: DataType = {}) {
+    constructor(data: DataType = {} as DataType) {
         if (data === null || typeof data !== "object") {
             throw new Error("Object expected but got typeof " + typeof data + " instead");
         }
 
-        this.data = data;
+        this.data = data as DataType & CustomType;
         return this;
     }
 
@@ -57,7 +49,7 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom(path: PathType, $default: any = {}): ObjectCollection {
+    public newInstanceFrom<T>(path: PathType<keyof DataType>, $default: T = {} as T) {
         let pathValue = this.get(path);
 
         // Set path value to $default if value is undefined.
@@ -66,7 +58,7 @@ class ObjectCollection {
             this.set(path, pathValue);
         }
 
-        return new ObjectCollection(pathValue);
+        return new ObjectCollection<T>(pathValue);
     }
 
     /**
@@ -75,24 +67,24 @@ class ObjectCollection {
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom(path: PathType, $default: any = {}): ObjectCollection {
-        return new ObjectCollection(_.cloneDeep(this.get(path, $default)));
+    public cloneInstanceFrom<T>(path: PathType<keyof DataType>, $default: T = {} as T) {
+        return new ObjectCollection<T>(_.cloneDeep(this.get(path, $default)));
     }
 
     /**
      * Return path as an instance of object validator but clones the object
      * This does not mutate main object in this.data
-     * @alias ObjectCollection.cloneInstanceFrom
+     * @alias cloneInstanceFrom
      */
-    public clonePath(path: PathType, $default?: any): ObjectCollection {
-        return this.cloneInstanceFrom(path, $default);
+    public clonePath<T>(path: PathType, $default?: T) {
+        return this.cloneInstanceFrom<T>(path, $default);
     }
 
     /**
      * Clone this data
      */
-    public cloneThis(): ObjectCollection {
-        return new ObjectCollection(this.return(true));
+    public cloneThis() {
+        return new ObjectCollection(this.return(true, true));
     }
 
     /**
@@ -108,7 +100,7 @@ class ObjectCollection {
      * AssignIn
      * @see _.assignIn
      */
-    public assignIn(...sources: object[]): this {
+    public assignIn(...sources: any[]): this {
         _.assignIn(this.data, ...sources);
         return this;
     }
@@ -117,7 +109,7 @@ class ObjectCollection {
      * AssignInWith
      * @see _.LodashAssignInWith
      */
-    public assignInWith(sources: object[], customizer: () => any): this {
+    public assignInWith<Source>(sources: Source, customizer: _.AssignCustomizer): this {
         _.assignInWith(this.data, sources, customizer);
         return this;
     }
@@ -126,7 +118,7 @@ class ObjectCollection {
      * AssignWith
      * @see _.LodashAssignWith
      */
-    public assignWith(sources: object[], customizer: () => any): this {
+    public assignWith<Source>(sources: Source, customizer: _.AssignCustomizer): this {
         _.assignWith(this.data, sources, customizer);
         return this;
     }
@@ -135,15 +127,15 @@ class ObjectCollection {
      * At
      * @see _.LodashAt
      */
-    public at(paths: any): any {
-        return _.at(this.data, paths);
+    public at<Result = any>(paths: string[] | number[]) {
+        return _.at<Result>(this.data, paths);
     }
 
     /**
      * Clone object
      * @see _.LodashClone
      */
-    public clone(): any {
+    public clone(): DataType {
         return _.clone(this.data);
     }
 
@@ -151,7 +143,7 @@ class ObjectCollection {
      * Clone object deep
      * @see _.LodashCloneDeep
      */
-    public cloneDeep(): any {
+    public cloneDeep(): DataType {
         return _.cloneDeep(this.data);
     }
 
@@ -159,24 +151,23 @@ class ObjectCollection {
      * Clone object deep with
      * @see _.LodashCloneDeepWith
      */
-    public cloneDeepWith(customizer: () => any): any {
-        return _.cloneDeepWith(this.data, customizer);
+    public cloneDeepWith<T = any>(customizer: _.CloneDeepWithCustomizer<DataType>) {
+        return _.cloneDeepWith(this.data, customizer) as T;
     }
 
     /**
      * Clone object with
      * @see _.LodashCloneWith
      */
-    public cloneWith(customizer: () => any): any {
+    public cloneWith<Result>(customizer: _.CloneWithCustomizer<DataType, Result>) {
         return _.cloneWith(this.data, customizer);
     }
 
     /**
      * Count Keys in Object
      */
-    public count(): number {
-        const data = Array.isArray(this.data) ? this.data : this.keys();
-        return data.length;
+    public count() {
+        return _.size(this.data);
     }
 
     /**
@@ -236,6 +227,30 @@ class ObjectCollection {
      */
     public extendWith(sources: object[], customizer: () => any): this {
         return this.assignInWith(sources, customizer);
+    }
+
+    /**
+     * Find in object
+     * @param path
+     */
+    public find(path: (value: any, key: any) => boolean) {
+        return _.find(this.data, path);
+    }
+
+    /**
+     * Filter in object
+     * @param path
+     */
+    public filter(path: (value: any, key: any) => boolean) {
+        return _.filter(this.data, path);
+    }
+
+    /**
+     * Map in object
+     * @param iteratee
+     */
+    public map(iteratee: (value: any, index: number, collection: any[]) => boolean) {
+        return _.map(this.data, iteratee);
     }
 
     /**
@@ -311,7 +326,7 @@ class ObjectCollection {
     public call(path: PathType | number, args?: any): any {
         const value: (...args: any[]) => void | any = this.get(path);
         if (typeof value !== "function") {
-            throw Error(`Value of path {${path}} is not a function`);
+            throw Error(`Value of path {${String(path)}} is not a function`);
         }
 
         if (args) {
@@ -638,7 +653,9 @@ class ObjectCollection {
                 if (forceToArrayIfNotArray) {
                     this.set(path, [storedValue]);
                 } else {
-                    throw new Error(`Path: "${path}" exist but it's not an array.`);
+                    throw new Error(
+                        `Path: "${String(path)}" exist but it's not an array.`
+                    );
                 }
             }
         }
@@ -664,7 +681,7 @@ class ObjectCollection {
      * this.clone is used;
      * @returns {*}
      */
-    public return(clone?: string | boolean, cloneDeep: boolean = true): any {
+    public return(clone?: string | boolean, cloneDeep: boolean = true) {
         return this.all(clone, cloneDeep);
     }
 
@@ -678,7 +695,7 @@ class ObjectCollection {
      * @alias ObjectCollection.return
      * @returns {*}
      */
-    public all(clone?: string | boolean, cloneDeep: boolean = true): any {
+    public all(clone?: string | boolean, cloneDeep: boolean = true) {
         if (clone === true) {
             return cloneDeep ? this.cloneDeep() : this.clone();
         }
@@ -717,7 +734,7 @@ class ObjectCollection {
      * Remove null values from object
      * @returns {ObjectCollection}
      */
-    public removeNullOrUndefined(): ObjectCollection {
+    public removeNullOrUndefined() {
         return this.replaceData(this.allWithoutNullOrUndefined());
     }
 
@@ -725,7 +742,7 @@ class ObjectCollection {
      * Remove null values from object
      * @returns {{}}
      */
-    public allWithoutNullOrUndefined<T = DataType>(): T {
+    public allWithoutNullOrUndefined<T = Partial<DataType>>(): T {
         return this.pickBy<T>((value: any) => {
             return value !== null && value !== undefined;
         });

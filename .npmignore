@@ -5,5 +5,5 @@ node_modules
 test.ts
 dist
 
-*.js
-*.d.ts
+*.ts
+!*.d.ts
