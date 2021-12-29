@@ -257,11 +257,253 @@ test.group("Public Functions", () => {
         assert.equal(obj.length(), 4);
     });
 
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#defaults
+     */
     test("defaults():", (assert) => {
         const obj = Obj({ a: 1 });
 
         obj.defaults({ b: 2 });
 
         assert.deepEqual(obj.data, { a: 1, b: 2 });
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#defaultsDeep
+     */
+    test("defaultsDeep():", (assert) => {
+        type obj = { a: { b: number; c?: number } };
+        const obj = Obj<obj>({ a: { b: 2 } });
+
+        obj.defaultsDeep({ a: { b: 1, c: 3 } });
+
+        assert.deepEqual(obj.data, { a: { b: 2, c: 3 } });
+    });
+
+    test("exists():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        assert.isTrue(obj.exists(["a", "b", "c"]));
+        assert.isFalse(obj.exists(["a", "d"]));
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#find
+     */
+    test("find():", (assert) => {
+        const users = Obj([
+            { user: "barney", age: 36, active: true },
+            { user: "fred", age: 40, active: false },
+            { user: "pebbles", age: 1, active: true }
+        ]);
+
+        let barney = users.find((o) => {
+            return o.age < 40;
+        });
+
+        // => object for 'barney'
+        assert.deepEqual(barney, users.data[0]);
+
+        // The `_.matches` iteratee shorthand.
+        const pebbles = users.find({ age: 1, active: true });
+        // => object for 'pebbles'
+        assert.deepEqual(pebbles, users.data[2]);
+
+        // The `_.matchesProperty` iteratee shorthand.
+        const fred = users.find(["active", false]);
+        // => object for 'fred'
+        assert.deepEqual(fred, users.data[1]);
+
+        // The `_.property` iteratee shorthand.
+        barney = users.find("active");
+        // => object for 'barney'
+        assert.deepEqual(barney, users.data[0]);
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#filter
+     */
+    test("filter():", (assert) => {
+        const users = Obj([
+            { user: "barney", age: 36, active: true },
+            { user: "fred", age: 40, active: false }
+        ]);
+
+        // using a predicate-returning function
+        let fred = users.filter(function (o) {
+            return !o.active;
+        });
+        // => objects for ['fred']
+        assert.deepEqual(fred, [users.data[1]]);
+
+        // The `_.matches` iteratee shorthand.
+        let barney = users.filter({ age: 36, active: true });
+        // => objects for ['barney']
+        assert.deepEqual(barney, [users.data[0]]);
+
+        // The `_.matchesProperty` iteratee shorthand.
+        fred = users.filter(["active", false]);
+        // => objects for ['fred']
+        assert.deepEqual(fred, [users.data[1]]);
+
+        // The `_.property` iteratee shorthand.
+        barney = users.filter("active");
+        // => objects for ['barney']
+        assert.deepEqual(barney, [users.data[0]]);
+    });
+
+    test("map():", (assert) => {
+        const users = Obj([
+            { user: "barney", age: 36, active: true },
+            { user: "fred", age: 40, active: false }
+        ]);
+
+        let ages = users.map((o) => {
+            return o.age;
+        });
+
+        // => [36, 40]
+        assert.deepEqual(ages, [36, 40]);
+
+        // The `_.property` iteratee shorthand.
+        const names = users.map("user");
+        // => ['barney', 'fred']
+        assert.deepEqual(names, ["barney", "fred"]);
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#findKey
+     */
+    test("findKey():", (assert) => {
+        const users = Obj({
+            barney: { age: 36, active: true },
+            fred: { age: 40, active: false },
+            pebbles: { age: 1, active: true }
+        });
+
+        let user = users.findKey((o) => {
+            return o.age < 40;
+        });
+
+        // => 'barney' (iteration order is not guaranteed)
+        assert.equal(user, "barney");
+
+        // => pebbles
+        assert.equal("pebbles", users.findKey({ age: 1, active: true }));
+
+        // => 'fred'
+        assert.equal("fred", users.findKey(["active", false]));
+
+        // => 'barney'
+        assert.equal("barney", users.findKey("active"));
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#findLastKey
+     */
+    test("findLastKey():", (assert) => {
+        const users = Obj({
+            barney: { age: 36, active: true },
+            fred: { age: 40, active: false },
+            pebbles: { age: 1, active: true }
+        });
+
+        let user = users.findLastKey((o) => {
+            return o.age < 40;
+        });
+
+        // => 'pebbles' (iteration order is not guaranteed)
+        assert.equal("pebbles", user);
+
+        // => 'pebbles'
+        assert.equal("barney", users.findLastKey({ age: 36, active: true }));
+
+        // => 'fred'
+        assert.equal("fred", users.findLastKey(["active", false]));
+
+        // => 'barney'
+        assert.equal("pebbles", users.findLastKey("active"));
+    });
+
+    test("[forIn, forInWith]():", (assert) => {
+        const users = Obj({
+            barney: { age: 36, active: true },
+            fred: { age: 40, active: false },
+            pebbles: { age: 1, active: true }
+        });
+
+        let result = "";
+        users.forIn((value, key) => {
+            result += key;
+        });
+
+        // => 'barneyfredpebbles' (iteration order is not guaranteed)
+        assert.equal("barneyfredpebbles", result);
+
+        result = "";
+        users.forInRight((value, key) => {
+            result += key;
+        });
+
+        // => 'pebblesfredbarney' (iteration order is not guaranteed)
+        assert.equal("pebblesfredbarney", result);
+    });
+
+    test("[functions, functionsIn()]:", (assert) => {
+        class Foo {
+            a = () => "a";
+            b = () => "b";
+            c!: () => "c";
+        }
+
+        // c will not be included in the result
+        Foo.prototype.c = () => "c";
+
+        const obj = Obj(new Foo());
+        assert.deepEqual(obj.functions(), ["a", "b"]);
+
+        // c is included in the result
+        assert.deepEqual(obj.functionsIn(), ["a", "b", "c"]);
+    });
+
+    test("get()", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        assert.equal(obj.get("a"), 1);
+        assert.equal(obj.get("b"), 2);
+        assert.equal(obj.get("c"), 3);
+        assert.isUndefined(obj.get("d"), undefined);
+        assert.equal(obj.get("d", "default"), "default");
+    });
+
+    test("has()", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: { d: 2 } });
+
+        assert.isTrue(obj.has("a"));
+        assert.isTrue(obj.has("b"));
+        assert.isTrue(obj.has("c.d"));
+
+        assert.isFalse(obj.has("d"));
+    });
+});
+
+test.group("Extra Functions", () => {
+    test("call():", (assert) => {
+        const obj = Obj({
+            hello: "world",
+            foo: function (...args: string[]) {
+                return args.concat("fromFoo");
+            }
+        });
+
+        const result = obj.call("foo", ["bar"]);
+
+        assert.deepEqual(result, ["bar", "fromFoo"]);
     });
 });

@@ -1,20 +1,49 @@
 import _ from "lodash";
 
-type PathType<T = string> = T | string | string[] | number | symbol;
+type PathType<T = Record<string, any>> =
+    | keyof T
+    | keyof T[]
+    | string
+    | string[]
+    | number
+    | symbol;
+
+type PredicateFnType<T = any, R = any> = (
+    value: FlatArray<T, number> & Record<any, any>,
+    index: keyof T
+) => R;
+
+type PredicateObjectFnType<T = Record<string, any>, R = any> = (
+    value: T[keyof T] & Record<any, any>,
+    index: keyof T
+) => R;
+
+type PredicateType<T = any, R = any> =
+    | string
+    | symbol
+    | number
+    | Record<any, any>
+    | PredicateFnType<T, R>;
+
+type PredicateObjectType<T = any, R = any> =
+    | string
+    | symbol
+    | number
+    | Record<any, any>
+    | PredicateObjectFnType<T, R>;
 
 /**
  * ObjectCollectionClass
  */
 class ObjectCollection<
-    DataType extends Record<string, any> = any,
-    CustomType = Record<string, any>
+    DataType extends Record<any, any> = any
+    // CustomType = Record<string, any>
 > {
     /**
      * Return new instance of ObjectCollection;
      * @param data
      */
-    public static use<DT>(data?: DT) {
-        if (!data) data = {} as DT;
+    public static use<DT>(data: DT = {} as DT) {
         return new ObjectCollection<DT>(data);
     }
 
@@ -29,7 +58,7 @@ class ObjectCollection<
     /**
      * Data being modified.
      */
-    public data: DataType & CustomType;
+    public data: DataType & Record<any, any>;
 
     /**
      * Object to use or a new object will be used.
@@ -40,7 +69,7 @@ class ObjectCollection<
             throw new Error("Object expected but got typeof " + typeof data + " instead");
         }
 
-        this.data = data as DataType & CustomType;
+        this.data = data;
         return this;
     }
 
@@ -49,7 +78,7 @@ class ObjectCollection<
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom<T>(path: PathType<keyof DataType>, $default: T = {} as T) {
+    public newInstanceFrom<T>(path: PathType<DataType>, $default: T = {} as T) {
         let pathValue = this.get(path);
 
         // Set path value to $default if value is undefined.
@@ -67,7 +96,7 @@ class ObjectCollection<
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom<T>(path: PathType<keyof DataType>, $default: T = {} as T) {
+    public cloneInstanceFrom<T>(path: PathType<DataType>, $default: T = {} as T) {
         return new ObjectCollection<T>(_.cloneDeep(this.get(path, $default)));
     }
 
@@ -199,7 +228,7 @@ class ObjectCollection<
     /**
      * Check if path Exists in object
      */
-    public exists(path: PathType) {
+    public exists(path: PathType<DataType> | PathType<DataType>[]) {
         if (Array.isArray(path)) {
             for (const key of path) {
                 if (!this.exists(key)) {
@@ -231,26 +260,27 @@ class ObjectCollection<
 
     /**
      * Find in object
-     * @param path
+     * @param predicate
+     * @param fromIndex
      */
-    public find(path: (value: any, key: any) => boolean) {
-        return _.find(this.data, path);
+    public find(predicate: PredicateType<DataType>, fromIndex?: number) {
+        return _.find(this.data, predicate as any, fromIndex);
     }
 
     /**
      * Filter in object
-     * @param path
+     * @param predicate
      */
-    public filter(path: (value: any, key: any) => boolean) {
-        return _.filter(this.data, path);
+    public filter(predicate: PredicateType<DataType>) {
+        return _.filter(this.data, predicate as any);
     }
 
     /**
      * Map in object
      * @param iteratee
      */
-    public map(iteratee: (value: any, index: number, collection: any[]) => boolean) {
-        return _.map(this.data, iteratee);
+    public map<Result = any>(iteratee: PredicateType<DataType, Result>) {
+        return _.map(this.data, iteratee as any) as unknown as Result[];
     }
 
     /**
@@ -258,8 +288,8 @@ class ObjectCollection<
      * @see _.LodashFindKey
      * @param predicate
      */
-    public findKey(predicate: any): any {
-        return _.findKey(this.data, predicate);
+    public findKey<Result = any>(predicate: PredicateObjectType<DataType, Result>) {
+        return _.findKey(this.data, predicate as any);
     }
 
     /**
@@ -267,8 +297,8 @@ class ObjectCollection<
      * @see _.LodashFindLastKey
      * @param predicate
      */
-    public findLastKey(predicate: any): any {
-        return _.findLastKey(this.data, predicate);
+    public findLastKey<Result = any>(predicate: PredicateObjectType<DataType, Result>) {
+        return _.findLastKey(this.data, predicate as any);
     }
 
     /**
@@ -276,7 +306,7 @@ class ObjectCollection<
      * @see _.LodashForIn
      * @param iteratee
      */
-    public forIn(iteratee: any): any {
+    public forIn(iteratee: PredicateObjectFnType<DataType>) {
         return _.forIn(this.data, iteratee);
     }
 
@@ -285,7 +315,7 @@ class ObjectCollection<
      * @see _.LodashForInRight
      * @param iteratee
      */
-    public forInRight(iteratee: any): any {
+    public forInRight(iteratee: PredicateObjectFnType<DataType>): any {
         return _.forInRight(this.data, iteratee);
     }
 
@@ -293,7 +323,7 @@ class ObjectCollection<
      * Functions
      * @see _.LodashFunctions
      */
-    public functions(): any {
+    public functions() {
         return _.functions(this.data);
     }
 
@@ -301,7 +331,7 @@ class ObjectCollection<
      * FunctionsIn
      * @see _.LodashFunctionsIn
      */
-    public functionsIn(): any {
+    public functionsIn() {
         return _.functionsIn(this.data);
     }
 
@@ -312,8 +342,8 @@ class ObjectCollection<
      * @param {*} [$default]
      * @return {*}
      */
-    public get(path: PathType | number, $default?: any): any {
-        return _.get(this.data, path, $default);
+    public get<Result = any>(path: PathType<DataType> | number, $default?: Result) {
+        return _.get(this.data, path, $default) as Result;
     }
 
     /**
@@ -323,7 +353,7 @@ class ObjectCollection<
      * @param args
      * @return {*}
      */
-    public call(path: PathType | number, args?: any): any {
+    public call<Result = any>(path: PathType<DataType> | number, args?: any[]): Result {
         const value: (...args: any[]) => void | any = this.get(path);
         if (typeof value !== "function") {
             throw Error(`Value of path {${String(path)}} is not a function`);
@@ -331,8 +361,6 @@ class ObjectCollection<
 
         if (args) {
             if (!Array.isArray(args)) args = [args];
-
-            // @ts-ignore
             return value(...args);
         } else {
             return value();
@@ -347,7 +375,7 @@ class ObjectCollection<
      * @see _.LodashHas
      * @return {boolean}
      */
-    public has(path: PathType): boolean {
+    public has(path: PathType) {
         return _.has(this.data, path);
     }
 
