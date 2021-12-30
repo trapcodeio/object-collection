@@ -3,6 +3,19 @@ import dummy from "./dummy.json";
 import { Obj } from "../exports";
 import ObjectCollection = require("../index");
 
+function classFooWithPrototypeC() {
+    class Foo {
+        a: string = "a";
+        b: string = "b";
+        c!: string;
+    }
+
+    // c will not be included in the result
+    Foo.prototype.c = "c";
+
+    return new Foo();
+}
+
 test.group("Static Functions", () => {
     test("use():", (assert) => {
         const obj = ObjectCollection.use(dummy);
@@ -472,7 +485,7 @@ test.group("Public Functions", () => {
         assert.deepEqual(obj.functionsIn(), ["a", "b", "c"]);
     });
 
-    test("get()", (assert) => {
+    test("get():", (assert) => {
         const obj = Obj({ a: 1, b: 2, c: 3 });
 
         assert.equal(obj.get("a"), 1);
@@ -482,13 +495,132 @@ test.group("Public Functions", () => {
         assert.equal(obj.get("d", "default"), "default");
     });
 
-    test("has()", (assert) => {
+    test("[has, hasIn]():", (assert) => {
         const obj = Obj({ a: 1, b: 2, c: { d: 2 } });
 
         assert.isTrue(obj.has("a"));
         assert.isTrue(obj.has("b"));
         assert.isTrue(obj.has("c.d"));
         assert.isFalse(obj.has("d"));
+
+        assert.isTrue(obj.hasIn("a"));
+        assert.isTrue(obj.hasIn("b"));
+        assert.isTrue(obj.hasIn("c.d"));
+        assert.isFalse(obj.hasIn("d"));
+    });
+
+    test("[invert, invertBy]():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 1 });
+
+        assert.deepEqual(obj.invert(), { "1": "c", "2": "b" });
+
+        // InvertBy
+        // => { '1': ['a', 'c'], '2': ['b'] }
+        assert.deepEqual(obj.invertBy(), { "1": ["a", "c"], "2": ["b"] });
+
+        const inverted = obj.invertBy(function (value) {
+            return "group" + value;
+        });
+
+        // => { 'group1': ['a', 'c'], 'group2': ['b'] }
+        assert.deepEqual(inverted, { group1: ["a", "c"], group2: ["b"] });
+    });
+
+    test("invoke():", (assert) => {
+        const obj = Obj({ a: [{ b: { c: [1, 2, 3, 4] } }] });
+
+        assert.deepEqual(obj.invoke("a[0].b.c.slice", 1, 3), [2, 3]);
+    });
+
+    test("keys():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+        assert.deepEqual(obj.keys(), ["a", "b", "c"]);
+
+        // Excludes inherited properties from the result
+        const obj1 = Obj(classFooWithPrototypeC());
+        assert.deepEqual(obj1.keys(), ["a", "b"]);
+    });
+
+    test("keysIn():", (assert) => {
+        const obj1 = Obj(classFooWithPrototypeC());
+        // Includes inherited properties in the result
+        assert.deepEqual(obj1.keysIn(), ["a", "b", "c"]);
+    });
+
+    test("mapKeys():", (assert) => {
+        const obj = Obj({ a: 1, b: 2 });
+
+        const keys = obj.mapKeys(function (value, key) {
+            return key + value;
+        });
+
+        assert.deepEqual(keys, { a1: 1, b2: 2 });
+        // => { 'a1': 1, 'b2': 2 }
+    });
+
+    test("mapValues():", (assert) => {
+        const obj = Obj({ a: 1, b: 2 });
+
+        const values = obj.mapValues(function (value) {
+            return value * 2;
+        });
+
+        assert.deepEqual(values, { a: 2, b: 4 });
+        // => { 'a': 2, 'b': 4 }
+
+        const users = Obj({
+            fred: { user: "fred", age: 40 },
+            pebbles: { user: "pebbles", age: 1 }
+        });
+
+        // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
+        assert.deepEqual(
+            users.mapValues((o) => o.age),
+            { fred: 40, pebbles: 1 }
+        );
+
+        // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
+        assert.deepEqual(users.mapValues("age"), { fred: 40, pebbles: 1 });
+    });
+
+    test("merge():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        obj.merge({ b: 4, c: 5 });
+
+        // => { 'a': 1, 'b': 4, 'c': 5 }
+        assert.deepEqual(obj.data, { a: 1, b: 4, c: 5 });
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#mergeWith
+     */
+    test("mergeWith():", (assert) => {
+        const obj = Obj({ a: [1], b: [2] });
+
+        const other = { a: [3], b: [4] };
+
+        obj.mergeWith(other, (objValue, srcValue) => {
+            if (Array.isArray(objValue)) {
+                return objValue.concat(srcValue);
+            }
+        });
+
+        assert.deepEqual(obj.data, { a: [1, 3], b: [2, 4] });
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#omit
+     */
+    test("omit():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        const omitted = obj.omit(["a", "c"]);
+
+        // => { 'b': 2 }
+        assert.deepEqual(omitted, { b: 2 });
     });
 });
 

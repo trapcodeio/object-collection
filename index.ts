@@ -394,7 +394,7 @@ class ObjectCollection<
      * Invert
      * @see _.LodashInvert
      */
-    public invert(): any {
+    public invert() {
         return _.invert(this.data);
     }
 
@@ -402,7 +402,7 @@ class ObjectCollection<
      *  InvertBy
      *  @see _.LodashInvertBy
      */
-    public invertBy(iteratee: () => any): any {
+    public invertBy(iteratee?: _.ValueIteratee<DataType[keyof DataType]>) {
         return _.invertBy(this.data, iteratee);
     }
 
@@ -410,7 +410,7 @@ class ObjectCollection<
      * Invoke
      * @see _.LodashInvoke
      */
-    public invoke(path: PathType, ...args: any[]): any {
+    public invoke(path: PathType, ...args: any[]) {
         return _.invoke(this.data, path, ...args);
     }
 
@@ -418,7 +418,7 @@ class ObjectCollection<
      * Keys
      * @see _.LodashKeys
      */
-    public keys(): any[] {
+    public keys() {
         return _.keys(this.data);
     }
 
@@ -426,7 +426,7 @@ class ObjectCollection<
      * KeysIn
      * @see _.LodashKeysIn
      */
-    public keysIn(): any[] {
+    public keysIn() {
         return _.keysIn(this.data);
     }
 
@@ -434,16 +434,16 @@ class ObjectCollection<
      * MapKeys
      * @see _.LodashMapKeys
      */
-    public mapKeys(iteratee: () => any): object {
-        return _.mapKeys(this.data, iteratee);
+    public mapKeys<Result = any>(iteratee: PredicateObjectFnType<DataType>): Result {
+        return _.mapKeys(this.data, iteratee) as unknown as Result;
     }
 
     /**
      * MapValues
      * @see _.LodashMapValues
      */
-    public mapValues(iteratee: () => any): object {
-        return _.mapValues(this.data, iteratee);
+    public mapValues<Result = any>(iteratee: PredicateObjectType<DataType>): Result {
+        return _.mapValues(this.data, iteratee as any) as Result;
     }
 
     /**
@@ -459,7 +459,7 @@ class ObjectCollection<
      * MergeWith
      * @see _.LodashMergeWith
      */
-    public mergeWith(source: any, customizer: any): this {
+    public mergeWith(source: any, customizer: _.MergeWithCustomizer): this {
         _.mergeWith(this.data, source, customizer);
         return this;
     }
@@ -468,7 +468,7 @@ class ObjectCollection<
      * Omit
      * @see _.LodashOmit
      */
-    public omit(paths: PathType): object {
+    public omit(paths: PathType<DataType>) {
         return _.omit(this.data, paths);
     }
 
