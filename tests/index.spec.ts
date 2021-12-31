@@ -5,13 +5,13 @@ import ObjectCollection = require("../index");
 
 function classFooWithPrototypeC() {
     class Foo {
-        a: string = "a";
-        b: string = "b";
-        c!: string;
+        a = 1;
+        b = 2;
+        c!: number;
     }
 
     // c will not be included in the result
-    Foo.prototype.c = "c";
+    Foo.prototype.c = 3;
 
     return new Foo();
 }
@@ -50,62 +50,6 @@ test.group("Public Functions", () => {
 
         // Compare with the original object
         assert.equal(obj.data.price, dummy.price);
-    });
-
-    test("[newInstanceFrom, path]():", (assert) => {
-        const obj = new ObjectCollection(dummy);
-        const newObj = obj.newInstanceFrom("users");
-
-        // check if new instance matches "users" in the original instance
-        assert.deepEqual(obj.data.users, newObj.data);
-    });
-
-    test("[newInstanceFrom, path](): where path does not exist", (assert) => {
-        const obj = new ObjectCollection(dummy);
-        const newObj = obj.newInstanceFrom("notFound");
-
-        // if path is not found, path will be created with {}
-        assert.isTrue(dummy.hasOwnProperty("notFound"));
-        assert.deepEqual(obj.data.notFound, newObj.data);
-
-        // will also delete the path {dummy.notFound}
-        delete obj.data.notFound;
-    });
-
-    test("[newInstanceFrom, path](): where path does not exist but with default value", (assert) => {
-        const obj = new ObjectCollection(dummy);
-        const newObj = obj.newInstanceFrom("notFound", { error: "404" });
-
-        // if path is not found, path will be created with {}
-        assert.isTrue(dummy.hasOwnProperty("notFound"));
-        // compare with the default value
-        assert.equal(obj.data.notFound.error, newObj.data.error);
-        // will also delete the path {dummy.notFound}
-        delete obj.data.notFound;
-    });
-
-    test("[cloneInstanceFrom, clonePath]():", (assert) => {
-        const obj = new ObjectCollection(dummy);
-        const newObj = obj.cloneInstanceFrom<typeof dummy["coordinates"]>("coordinates");
-
-        // update x coordinate
-        newObj.data.x = 36;
-
-        // Since we are using a clone, the original value of path "coordinates" should not be updated
-        assert.notEqual(obj.data.coordinates.x, newObj.data.x);
-        // but obj data and dummy data should be the same left unchanged
-        assert.equal(obj.data.coordinates.x, dummy.coordinates.x);
-    });
-
-    test("cloneThis():", (assert) => {
-        const obj = new ObjectCollection(dummy);
-        const newObj = obj.cloneThis();
-
-        // update x coordinate
-        newObj.data.coordinates.x = 37;
-
-        // Since we are using a clone, the original value of path "coordinates" should not be updated
-        assert.notEqual(obj.data.coordinates.x, newObj.data.coordinates.x);
     });
 
     /**
@@ -633,26 +577,188 @@ test.group("Public Functions", () => {
         // => { 'b': 2 }
         assert.deepEqual(omitted, { b: 2 });
     });
-});
 
-test.group("Extra Functions", () => {
-    test("call():", (assert) => {
-        const obj = Obj({
-            hello: "world",
-            foo: function (...args: string[]) {
-                return args.concat("fromFoo");
-            }
-        });
+    test("pick():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
 
-        const result = obj.call("foo", ["bar"]);
-
-        assert.deepEqual(result, ["bar", "fromFoo"]);
-    });
-
-    test("forget():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 }).forget("b");
+        const picked = obj.pick(["a"]);
 
         // => { 'a': 1, 'c': 3 }
-        assert.deepEqual(obj.data, { a: 1, c: 3 });
+        assert.deepEqual(picked, { a: 1 });
     });
+
+    test("pickBy():", (assert) => {
+        const obj = Obj({ a: 1, b: "2", c: 3 });
+
+        const picked = obj.pickBy(function (value) {
+            return typeof value === "number";
+        });
+
+        assert.deepEqual(picked, { a: 1, c: 3 });
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#result
+     */
+    test("result():", (assert) => {
+        const obj = Obj({ a: [{ b: { c1: 3, c2: () => 4 } }] });
+
+        assert.equal(obj.result("a[0].b.c1"), 3);
+        // => 3
+
+        assert.equal(obj.result("a[0].b.c2"), 4);
+        // => 4
+
+        assert.equal(obj.result("a[0].b.c3", "default"), "default");
+        // => 'default'
+
+        assert.equal(
+            obj.result("a[0].b.c3", () => "default"),
+            "default"
+        );
+        // => 'default'
+    });
+
+    test("set():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        // Set key, value args
+        obj.set("b", 4);
+        // => { 'a': 1, 'b': 4, 'c': 3 }
+        assert.deepEqual(obj.data, { a: 1, b: 4, c: 3 });
+
+        // Set object
+        obj.set({ b: 5, c: 6 });
+
+        // => { 'a': 1, 'b': 5, 'c': 6 }
+        assert.deepEqual(obj.data, { a: 1, b: 5, c: 6 });
+    });
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#setWith
+     */
+    test("setWith():", (assert) => {
+        const obj = Obj({}).setWith("[0][1]", "a", Object);
+
+        assert.deepEqual(obj.data, { 0: { 1: "a" } });
+    });
+
+    test("toPairs():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        // => [['a', 1], ['b', 2], ['c', 3]]
+        assert.deepEqual(obj.toPairs(), [
+            ["a", 1],
+            ["b", 2],
+            ["c", 3]
+        ]);
+
+        // Check skipping inherited properties
+        const obj2 = Obj(classFooWithPrototypeC());
+
+        assert.deepEqual(obj2.toPairs(), [
+            ["a", 1],
+            ["b", 2]
+        ]);
+    });
+
+    test("toPairsIn():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        // => [['a', 1], ['b', 2], ['c', 3]]
+        assert.deepEqual(obj.toPairsIn(), [
+            ["a", 1],
+            ["b", 2],
+            ["c", 3]
+        ]);
+
+        // Check skipping inherited properties
+        const obj2 = Obj(classFooWithPrototypeC());
+
+        assert.deepEqual(obj2.toPairsIn(), [
+            ["a", 1],
+            ["b", 2],
+            ["c", 3]
+        ]);
+    });
+
+    test("transform():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        const result = obj.transform(function (result, value, key) {
+            result[key] = value * 2;
+        });
+
+        // => { 'a': 2, 'b': 4, 'c': 6 }
+        assert.deepEqual(result, { a: 2, b: 4, c: 6 });
+    });
+
+    test("unset():", (assert) => {
+        const data = { a: 1, b: 2, c: 3 };
+        const obj = Obj(data);
+
+        obj.unset("b");
+
+        // If @ts-ignore is removed, this will fail
+        // because b is missing from the object
+        // @ts-ignore
+        assert.deepEqual(obj.data, { a: 1, c: 3 });
+
+        // in order to get a good type we use the all method
+        const result = obj.all<Omit<typeof data, "b">>()
+
+
+        assert.deepEqual(result, { a: 1, c: 3 });
+    });
+
+    test("update():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        obj.update("b", (value) => value + 1);
+
+        // => { 'a': 1, 'b': 3, 'c': 3 }
+        assert.deepEqual(obj.data, { a: 1, b: 3, c: 3 });
+    })
+
+    /**
+     * Test data from lodash documentation
+     * https://lodash.com/docs/#updateWith
+     */
+    test("updateWith():", (assert) => {
+        const obj = Obj({})
+
+        obj.updateWith('[0][1]', () => 'a', Object);
+
+        // => { 'a': 1, 'b': 6, 'c': 3 }
+        assert.deepEqual(obj.data, { '0': { '1': 'a' } });
+    })
+
+    test("values():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        // => [1, 2, 3]
+        assert.deepEqual(obj.values(), [1, 2, 3]);
+
+        // skip inherited properties
+        const obj2 = Obj(classFooWithPrototypeC());
+
+        // => [1, 2]
+        assert.deepEqual(obj2.values(), [1, 2]);
+    })
+
+    test("valuesIn():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        // => [1, 2, 3]
+        assert.deepEqual(obj.valuesIn(), [1, 2, 3]);
+
+        // add inherited properties
+        const obj2 = Obj(classFooWithPrototypeC());
+
+        // => [1, 2, 3]
+        assert.deepEqual(obj2.valuesIn(), [1, 2, 3]);
+    })
+
 });

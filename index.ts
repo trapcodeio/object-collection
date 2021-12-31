@@ -1,5 +1,7 @@
 import _ from "lodash";
 
+type TObject = Record<any, any>;
+
 type PathType<T = Record<string, any>> =
     | keyof T
     | Array<keyof T>
@@ -7,15 +9,15 @@ type PathType<T = Record<string, any>> =
     | string[]
     | number;
 
-type PathsArrayType<T = Record<string, any>> = Array<keyof T> | string[] | number[];
+type PathsArrayType<T extends TObject> = (keyof T)[] | string[] | number[];
 
 type PredicateFnType<T = any, R = any> = (
-    value: FlatArray<T, number> & Record<any, any>,
+    value: FlatArray<T, number> & TObject,
     index: keyof T
 ) => R;
 
 type PredicateObjectFnType<T = Record<string, any>, R = any> = (
-    value: T[keyof T] & Record<any, any>,
+    value: T[keyof T] & TObject,
     index: keyof T
 ) => R;
 
@@ -23,23 +25,26 @@ type PredicateType<T = any, R = any> =
     | string
     | symbol
     | number
-    | Record<any, any>
+    | TObject
     | PredicateFnType<T, R>;
 
 type PredicateObjectType<T = any, R = any> =
     | string
     | symbol
     | number
-    | Record<any, any>
+    | TObject
     | PredicateObjectFnType<T, R>;
 
+type KeysOrString<T> = keyof T | string | number;
+
+// type ExtendsObject<T, T2> = T extends TObject ? T : T2; 
 /**
  * ObjectCollectionClass
  */
 class ObjectCollection<
-    DataType extends Record<any, any> = any
+    DataType extends TObject = TObject
     // CustomType = Record<string, any>
-> {
+    > {
     /**
      * Return new instance of ObjectCollection;
      * @param data
@@ -59,7 +64,7 @@ class ObjectCollection<
     /**
      * Data being modified.
      */
-    public data: DataType & Record<any, any>;
+    public data: DataType & TObject;
 
     /**
      * Object to use or a new object will be used.
@@ -113,8 +118,8 @@ class ObjectCollection<
     /**
      * Clone this data
      */
-    public cloneThis() {
-        return new ObjectCollection(this.return(true, true));
+    public cloneThis<T extends TObject = DataType>() {
+        return new ObjectCollection(this.return<T>(true, true));
     }
 
     /**
@@ -165,16 +170,16 @@ class ObjectCollection<
      * Clone object
      * @see _.LodashClone
      */
-    public clone(): DataType {
-        return _.clone(this.data);
+    public clone<Result extends DataType>() {
+        return _.clone(this.data) as Result;
     }
 
     /**
      * Clone object deep
      * @see _.LodashCloneDeep
      */
-    public cloneDeep(): DataType {
-        return _.cloneDeep(this.data);
+    public cloneDeep<Result extends DataType>() {
+        return _.cloneDeep(this.data) as Result;
     }
 
     /**
@@ -341,9 +346,10 @@ class ObjectCollection<
      * @method
      * @param {string|string[]} path
      * @param {*} [$default]
-     * @return {*}
      */
-    public get<Result = any>(path: PathType<DataType> | number, $default?: Result) {
+    public get<Result = any>(path: PathType<DataType>, $default?: Result) {
+        if(typeof path !== "number" && (path as string).length === 0) {return $default;}
+
         return _.get(this.data, path, $default) as Result;
     }
 
@@ -355,7 +361,8 @@ class ObjectCollection<
      * @return {*}
      */
     public call<Result = any>(path: PathType<DataType> | number, args?: any[]): Result {
-        const value: (...args: any[]) => void | any = this.get(path);
+        const value: ((...args: any[]) => void | any) | undefined = this.get(path);
+
         if (typeof value !== "function") {
             throw Error(`Value of path {${String(path)}} is not a function`);
         }
@@ -420,7 +427,7 @@ class ObjectCollection<
      * @see _.LodashKeys
      */
     public keys() {
-        return _.keys(this.data);
+        return _.keys(this.data) as Array<keyof DataType> | string[];
     }
 
     /**
@@ -428,7 +435,7 @@ class ObjectCollection<
      * @see _.LodashKeysIn
      */
     public keysIn() {
-        return _.keysIn(this.data);
+        return _.keysIn(this.data) as Array<keyof DataType> | string[];
     }
 
     /**
@@ -479,11 +486,11 @@ class ObjectCollection<
      */
     public forget<T extends string | keyof DataType>(
         paths: T
-    ): ObjectCollection<Omit<DataType, T> | Record<any, any>>;
+    ): ObjectCollection<Omit<DataType, T> | TObject>;
 
     public forget<T extends PathsArrayType<DataType>>(paths: T) {
         return ObjectCollection.use(
-            this.omit(paths) as Omit<DataType, T[number]> | Record<any, any>
+            this.omit(paths) as Omit<DataType, T[number]> | TObject
         );
     }
 
@@ -501,7 +508,15 @@ class ObjectCollection<
      * Pick
      * @see _.LodashPick
      */
-    public pick(paths: PathType): object {
+    public pick<Result extends Record<string, any>, T extends KeysOrString<DataType>>(
+        paths: T
+    ): Pick<DataType, T> & Result;
+
+    public pick<Result extends Record<string, any>, T extends PathsArrayType<DataType>>(
+        paths: T
+    ): Pick<DataType, T[number]> & Result;
+
+    public pick(paths: PathType<DataType>) {
         return _.pick(this.data, paths);
     }
 
@@ -510,7 +525,16 @@ class ObjectCollection<
      * Returns instance of ObjectCollection
      * @returns {ObjectCollection}
      */
-    public collect(paths: PathType): ObjectCollection {
+    public collect<Result extends Record<string, any>, T extends KeysOrString<DataType>>(
+        paths: T
+    ): ObjectCollection<Pick<DataType, T> & Result>;
+
+    public collect<
+        Result extends Record<string, any>,
+        T extends PathsArrayType<DataType>
+    >(paths: T): ObjectCollection<Pick<DataType, T[number]> & Result>;
+
+    public collect(paths: PathsArrayType<DataType>) {
         return ObjectCollection.use(this.pick(paths));
     }
 
@@ -518,15 +542,15 @@ class ObjectCollection<
      * PickBy
      * @see _.LodashPickBy
      */
-    public pickBy<T = DataType>(predicate: (value: any, key: string) => boolean): T {
-        return _.pickBy(this.data, predicate) as T;
+    public pickBy<Result extends TObject>(predicate: PredicateObjectType<DataType>) {
+        return _.pickBy(this.data, predicate) as Partial<DataType> & Result;
     }
 
     /**
      * Result
      * @see _.LodashResult
      */
-    public result(path: PathType, $default?: any): any {
+    public result<Result>(path: PathType<DataType>, $default?: Result | ((...args: any[]) => Result)) {
         return _.result(this.data, path, $default);
     }
 
@@ -538,14 +562,14 @@ class ObjectCollection<
      * @param definedOnly
      */
     public set(
-        path: PathType<DataType> | Record<any, any>,
+        path: PathType<DataType> | Record<KeysOrString<DataType>, any>,
         value?: any,
         definedOnly: boolean = false
     ): this {
         if (typeof path === "object") {
             for (const key of Object.keys(path)) {
-                // @ts-ignores
-                this.set(key, path[key]);
+
+                this.set(key, (path as any)[key], definedOnly);
             }
         } else {
             if (definedOnly && (value === undefined || value === null)) {
@@ -564,7 +588,7 @@ class ObjectCollection<
      * @param {PathType} path
      * @param {*} [value]
      */
-    public setDefined(path: PathType | object, value?: any): this {
+    public setDefined(path: PathType<DataType> | Record<KeysOrString<DataType>, any>, value?: any): this {
         return this.set(path, value, true);
     }
 
@@ -596,7 +620,7 @@ class ObjectCollection<
      * SetWith
      * @see _.LodashSetWith
      */
-    public setWith(path: PathType, value: any, customizer?: () => any): object {
+    public setWith(path: PathType, value: any, customizer?: _.SetWithCustomizer<DataType>) {
         _.setWith(this.data, path, value, customizer);
         return this;
     }
@@ -621,7 +645,7 @@ class ObjectCollection<
      * ToPairsIn
      * @see _.LodashToPairsIn
      */
-    public toPairsIn(): any[] {
+    public toPairsIn() {
         return _.toPairsIn(this.data);
     }
 
@@ -629,16 +653,15 @@ class ObjectCollection<
      * Transform
      * @see _.LodashTransform
      */
-    public transform(iteratee: () => any, accumulator?: any): any {
-        // @ts-ignore
-        return _.transform(this.data, iteratee, accumulator);
+    public transform<Result extends Record<string, any>>(iteratee: (...args: any[]) => any, accumulator?: any) {
+        return _.transform(this.data, iteratee, accumulator) as Partial<DataType> & Result;
     }
 
     /**
      * Unset a path in object.
      * @see _.LodashUnset
      */
-    public unset(path: PathType): this {
+    public unset(path: PathType<DataType>) {
         _.unset(this.data, path);
         return this;
     }
@@ -647,7 +670,7 @@ class ObjectCollection<
      * Update
      * @see _.LodashUpdate
      */
-    public update(path: PathType, updater: () => any): this {
+    public update(path: PathType, updater: (value: any) => any): this {
         _.update(this.data, path, updater);
         return this;
     }
@@ -656,7 +679,7 @@ class ObjectCollection<
      * UpdateWith
      * @see _.LodashUpdateWith
      */
-    public updateWith(path: PathType, updater: () => any, customizer?: () => any): this {
+    public updateWith(path: PathType, updater: (oldValue: any) => any, customizer?: _.SetWithCustomizer<DataType>): this {
         _.updateWith(this.data, path, updater, customizer);
         return this;
     }
@@ -665,7 +688,7 @@ class ObjectCollection<
      * Values
      * @see _.LodashValues
      */
-    public values(): any[] {
+    public values() {
         return _.values(this.data);
     }
 
@@ -673,7 +696,7 @@ class ObjectCollection<
      * Values
      * @see _.LodashValues
      */
-    public valuesIn(): any[] {
+    public valuesIn() {
         return _.valuesIn(this.data);
     }
 
@@ -682,7 +705,7 @@ class ObjectCollection<
      * @param path
      * @param forceToArrayIfNotArray
      */
-    public array(path: PathType, forceToArrayIfNotArray?: boolean): any[] {
+    public array<Result>(path: PathType<DataType>, forceToArrayIfNotArray?: boolean) {
         const storedValue = this.get(path, undefined);
 
         if (storedValue === undefined) {
@@ -701,7 +724,7 @@ class ObjectCollection<
             }
         }
 
-        return this.get(path);
+        return this.get(path) as Result[];
     }
 
     /**
@@ -720,10 +743,9 @@ class ObjectCollection<
      * if clone is `true` this.cloneDeep is used.
      * else if clone is string `!deep`
      * this.clone is used;
-     * @returns {*}
      */
-    public return(clone?: string | boolean, cloneDeep: boolean = true) {
-        return this.all(clone, cloneDeep);
+    public return<Result extends TObject = DataType>(clone?: boolean, cloneDeep: boolean = true) {
+        return this.all<Result>(clone, cloneDeep);
     }
 
     /**
@@ -734,21 +756,20 @@ class ObjectCollection<
      * this.clone is used;
      *
      * @alias ObjectCollection.return
-     * @returns {*}
      */
-    public all(clone?: string | boolean, cloneDeep: boolean = true) {
+    public all<Result extends TObject = DataType>(clone?: boolean, cloneDeep: boolean = true) {
         if (clone === true) {
-            return cloneDeep ? this.cloneDeep() : this.clone();
+            return (cloneDeep ? this.cloneDeep() : this.clone()) as Result;
         }
 
-        return this.data;
+        return this.data as Result;
     }
 
     /**
      * Return Object to Json
      * @returns {string}
      */
-    public toJson(replacer = null, space = 2) {
+    public toJson(replacer = null, space = 0): string {
         return JSON.stringify(this.all(), replacer, space);
     }
 
@@ -759,16 +780,6 @@ class ObjectCollection<
     public replaceData(data: any) {
         this.data = data;
         return this;
-    }
-
-    /**
-     * Use removeNullOrUndefined | allWithoutNullOrUndefined
-     * @param {boolean} returnThis
-     * @deprecated
-     */
-    public removeNull(returnThis: boolean = false): object | ObjectCollection {
-        const without = this.allWithoutNullOrUndefined();
-        return returnThis ? this.replaceData(without) : without;
     }
 
     /**
