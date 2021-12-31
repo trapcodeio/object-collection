@@ -219,4 +219,64 @@ test.group("Extra Functions", () => {
 
         assert.deepEqual(obj.allWithoutNullOrUndefined(), { a: 1, c: 3, e: 4 });
     });
+
+    test("defined():", (assert) => {
+        const data = { a: 1, b: null, c: 3, d: undefined, e: 4 };
+        const obj = Obj(data);
+
+        const defined = obj.defined<Omit<typeof data, "b" | "d">>();
+
+        // defined.
+        assert.deepEqual(defined, { a: 1, c: 3, e: 4 });
+    });
+
+    test("sync():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        const a = obj.sync<number>("a");
+
+        assert.equal(a.sync, 1);
+
+        a.changeTo(20);
+
+        assert.equal(a.sync, 20);
+    });
+
+    test("syncWithInitial():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        const a = obj.syncWithInitial<number>("b");
+
+        assert.equal(a.sync, 2);
+        assert.equal(a.initial, 2);
+        assert.isFalse(a.hasChanged);
+
+        a.changeTo(20);
+
+        assert.equal(a.sync, 20);
+        assert.equal(a.initial, 2);
+        assert.isTrue(a.hasChanged);
+    });
+
+    test("compute():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        obj.compute((ob) => {
+            ob.set("z", 20);
+            ob.unset("a");
+        });
+
+        assert.deepEqual(obj.data as any, { b: 2, c: 3, z: 20 });
+    });
+
+    test("computeAsync():", async (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        await obj.computeAsync(async (ob) => {
+            ob.set("z", 20);
+            ob.unset("a");
+        });
+
+        assert.deepEqual(obj.data as any, { b: 2, c: 3, z: 20 });
+    });
 });

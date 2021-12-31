@@ -1,50 +1,24 @@
 import _ from "lodash";
+import {
+    OC_KeysOrString,
+    OC_PathsArrayType,
+    OC_PathType,
+    OC_PredicateObjectFnType,
+    OC_PredicateObjectType,
+    OC_PredicateType,
+    OC_SyncPath,
+    OC_SyncPathWithInitial,
+    OC_TObject
+} from "./types";
 
-type TObject = Record<any, any>;
-
-type PathType<T = Record<string, any>> =
-    | keyof T
-    | Array<keyof T>
-    | string
-    | string[]
-    | number;
-
-type PathsArrayType<T extends TObject> = (keyof T)[] | string[] | number[];
-
-type PredicateFnType<T = any, R = any> = (
-    value: FlatArray<T, number> & TObject,
-    index: keyof T
-) => R;
-
-type PredicateObjectFnType<T = Record<string, any>, R = any> = (
-    value: T[keyof T] & TObject,
-    index: keyof T
-) => R;
-
-type PredicateType<T = any, R = any> =
-    | string
-    | symbol
-    | number
-    | TObject
-    | PredicateFnType<T, R>;
-
-type PredicateObjectType<T = any, R = any> =
-    | string
-    | symbol
-    | number
-    | TObject
-    | PredicateObjectFnType<T, R>;
-
-type KeysOrString<T> = keyof T | string | number;
-
-// type ExtendsObject<T, T2> = T extends TObject ? T : T2; 
+// type ExtendsObject<T, T2> = T extends OC_TObject ? T : T2;
 /**
  * ObjectCollectionClass
  */
 class ObjectCollection<
-    DataType extends TObject = TObject
+    DataType extends OC_TObject = OC_TObject
     // CustomType = Record<string, any>
-    > {
+> {
     /**
      * Return new instance of ObjectCollection;
      * @param data
@@ -64,7 +38,7 @@ class ObjectCollection<
     /**
      * Data being modified.
      */
-    public data: DataType & TObject;
+    public data: DataType & OC_TObject;
 
     /**
      * Object to use or a new object will be used.
@@ -84,7 +58,7 @@ class ObjectCollection<
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom<T>(path: PathType<DataType>, $default: T = {} as T) {
+    public newInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
         let pathValue = this.get(path);
 
         // Set path value to $default if value is undefined.
@@ -102,7 +76,7 @@ class ObjectCollection<
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom<T>(path: PathType<DataType>, $default: T = {} as T) {
+    public cloneInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
         return new ObjectCollection<T>(_.cloneDeep(this.get(path, $default)));
     }
 
@@ -111,14 +85,14 @@ class ObjectCollection<
      * This does not mutate main object in this.data
      * @alias cloneInstanceFrom
      */
-    public clonePath<T>(path: PathType, $default?: T) {
+    public clonePath<T>(path: OC_PathType, $default?: T) {
         return this.cloneInstanceFrom<T>(path, $default);
     }
 
     /**
      * Clone this data
      */
-    public cloneThis<T extends TObject = DataType>() {
+    public cloneThis<T extends OC_TObject = DataType>() {
         return new ObjectCollection(this.return<T>(true, true));
     }
 
@@ -234,7 +208,7 @@ class ObjectCollection<
     /**
      * Check if path Exists in object
      */
-    public exists(path: PathType<DataType> | PathType<DataType>[]) {
+    public exists(path: OC_PathType<DataType> | OC_PathType<DataType>[]) {
         if (Array.isArray(path)) {
             for (const key of path) {
                 if (!this.exists(key)) {
@@ -269,7 +243,7 @@ class ObjectCollection<
      * @param predicate
      * @param fromIndex
      */
-    public find(predicate: PredicateType<DataType>, fromIndex?: number) {
+    public find(predicate: OC_PredicateType<DataType>, fromIndex?: number) {
         return _.find(this.data, predicate as any, fromIndex);
     }
 
@@ -277,7 +251,7 @@ class ObjectCollection<
      * Filter in object
      * @param predicate
      */
-    public filter(predicate: PredicateType<DataType>) {
+    public filter(predicate: OC_PredicateType<DataType>) {
         return _.filter(this.data, predicate as any);
     }
 
@@ -285,7 +259,7 @@ class ObjectCollection<
      * Map in object
      * @param iteratee
      */
-    public map<Result = any>(iteratee: PredicateType<DataType, Result>) {
+    public map<Result = any>(iteratee: OC_PredicateType<DataType, Result>) {
         return _.map(this.data, iteratee as any) as unknown as Result[];
     }
 
@@ -294,7 +268,7 @@ class ObjectCollection<
      * @see _.LodashFindKey
      * @param predicate
      */
-    public findKey<Result = any>(predicate: PredicateObjectType<DataType, Result>) {
+    public findKey<Result = any>(predicate: OC_PredicateObjectType<DataType, Result>) {
         return _.findKey(this.data, predicate as any);
     }
 
@@ -303,7 +277,9 @@ class ObjectCollection<
      * @see _.LodashFindLastKey
      * @param predicate
      */
-    public findLastKey<Result = any>(predicate: PredicateObjectType<DataType, Result>) {
+    public findLastKey<Result = any>(
+        predicate: OC_PredicateObjectType<DataType, Result>
+    ) {
         return _.findLastKey(this.data, predicate as any);
     }
 
@@ -312,7 +288,7 @@ class ObjectCollection<
      * @see _.LodashForIn
      * @param iteratee
      */
-    public forIn(iteratee: PredicateObjectFnType<DataType>) {
+    public forIn(iteratee: OC_PredicateObjectFnType<DataType>) {
         return _.forIn(this.data, iteratee);
     }
 
@@ -321,7 +297,7 @@ class ObjectCollection<
      * @see _.LodashForInRight
      * @param iteratee
      */
-    public forInRight(iteratee: PredicateObjectFnType<DataType>): any {
+    public forInRight(iteratee: OC_PredicateObjectFnType<DataType>): any {
         return _.forInRight(this.data, iteratee);
     }
 
@@ -347,8 +323,10 @@ class ObjectCollection<
      * @param {string|string[]} path
      * @param {*} [$default]
      */
-    public get<Result = any>(path: PathType<DataType>, $default?: Result) {
-        if(typeof path !== "number" && (path as string).length === 0) {return $default;}
+    public get<Result = any>(path: OC_PathType<DataType>, $default?: Result) {
+        if (typeof path !== "number" && (path as string).length === 0) {
+            return $default;
+        }
 
         return _.get(this.data, path, $default) as Result;
     }
@@ -360,7 +338,10 @@ class ObjectCollection<
      * @param args
      * @return {*}
      */
-    public call<Result = any>(path: PathType<DataType> | number, args?: any[]): Result {
+    public call<Result = any>(
+        path: OC_PathType<DataType> | number,
+        args?: any[]
+    ): Result {
         const value: ((...args: any[]) => void | any) | undefined = this.get(path);
 
         if (typeof value !== "function") {
@@ -383,7 +364,7 @@ class ObjectCollection<
      * @see _.LodashHas
      * @return {boolean}.
      */
-    public has(path: PathType) {
+    public has(path: OC_PathType) {
         return _.has(this.data, path);
     }
 
@@ -394,7 +375,7 @@ class ObjectCollection<
      * @see _.LodashHasIn
      * @return {boolean}
      */
-    public hasIn(path: PathType): boolean {
+    public hasIn(path: OC_PathType): boolean {
         return _.hasIn(this.data, path);
     }
 
@@ -418,7 +399,7 @@ class ObjectCollection<
      * Invoke
      * @see _.LodashInvoke
      */
-    public invoke(path: PathType, ...args: any[]) {
+    public invoke(path: OC_PathType, ...args: any[]) {
         return _.invoke(this.data, path, ...args);
     }
 
@@ -442,7 +423,7 @@ class ObjectCollection<
      * MapKeys
      * @see _.LodashMapKeys
      */
-    public mapKeys<Result = any>(iteratee: PredicateObjectFnType<DataType>): Result {
+    public mapKeys<Result = any>(iteratee: OC_PredicateObjectFnType<DataType>): Result {
         return _.mapKeys(this.data, iteratee) as unknown as Result;
     }
 
@@ -450,7 +431,7 @@ class ObjectCollection<
      * MapValues
      * @see _.LodashMapValues
      */
-    public mapValues<Result = any>(iteratee: PredicateObjectType<DataType>): Result {
+    public mapValues<Result = any>(iteratee: OC_PredicateObjectType<DataType>): Result {
         return _.mapValues(this.data, iteratee as any) as Result;
     }
 
@@ -476,7 +457,7 @@ class ObjectCollection<
      * Omit
      * @see _.LodashOmit
      */
-    public omit<Result = Record<string, any>>(...paths: PathType<DataType>[]) {
+    public omit<Result = Record<string, any>>(...paths: OC_PathType<DataType>[]) {
         return _.omit(this.data, ...paths) as Partial<DataType> & Result;
     }
 
@@ -486,11 +467,11 @@ class ObjectCollection<
      */
     public forget<T extends string | keyof DataType>(
         paths: T
-    ): ObjectCollection<Omit<DataType, T> | TObject>;
+    ): ObjectCollection<Omit<DataType, T> | OC_TObject>;
 
-    public forget<T extends PathsArrayType<DataType>>(paths: T) {
+    public forget<T extends OC_PathsArrayType<DataType>>(paths: T) {
         return ObjectCollection.use(
-            this.omit(paths) as Omit<DataType, T[number]> | TObject
+            this.omit(paths) as Omit<DataType, T[number]> | OC_TObject
         );
     }
 
@@ -499,7 +480,7 @@ class ObjectCollection<
      * @see _.LodashOmitBy
      */
     public omitBy<Result = Record<string, any>>(
-        predicate: PredicateObjectType<DataType>
+        predicate: OC_PredicateObjectType<DataType>
     ) {
         return _.omitBy(this.data, predicate) as Partial<DataType> & Result;
     }
@@ -508,15 +489,16 @@ class ObjectCollection<
      * Pick
      * @see _.LodashPick
      */
-    public pick<Result extends Record<string, any>, T extends KeysOrString<DataType>>(
+    public pick<Result extends Record<string, any>, T extends OC_KeysOrString<DataType>>(
         paths: T
     ): Pick<DataType, T> & Result;
 
-    public pick<Result extends Record<string, any>, T extends PathsArrayType<DataType>>(
-        paths: T
-    ): Pick<DataType, T[number]> & Result;
+    public pick<
+        Result extends Record<string, any>,
+        T extends OC_PathsArrayType<DataType>
+    >(paths: T): Pick<DataType, T[number]> & Result;
 
-    public pick(paths: PathType<DataType>) {
+    public pick(paths: OC_PathType<DataType>) {
         return _.pick(this.data, paths);
     }
 
@@ -525,16 +507,17 @@ class ObjectCollection<
      * Returns instance of ObjectCollection
      * @returns {ObjectCollection}
      */
-    public collect<Result extends Record<string, any>, T extends KeysOrString<DataType>>(
-        paths: T
-    ): ObjectCollection<Pick<DataType, T> & Result>;
+    public collect<
+        Result extends Record<string, any>,
+        T extends OC_KeysOrString<DataType>
+    >(paths: T): ObjectCollection<Pick<DataType, T> & Result>;
 
     public collect<
         Result extends Record<string, any>,
-        T extends PathsArrayType<DataType>
+        T extends OC_PathsArrayType<DataType>
     >(paths: T): ObjectCollection<Pick<DataType, T[number]> & Result>;
 
-    public collect(paths: PathsArrayType<DataType>) {
+    public collect(paths: OC_PathsArrayType<DataType>) {
         return ObjectCollection.use(this.pick(paths));
     }
 
@@ -542,7 +525,9 @@ class ObjectCollection<
      * PickBy
      * @see _.LodashPickBy
      */
-    public pickBy<Result extends TObject = DataType>(predicate: PredicateObjectType<DataType>) {
+    public pickBy<Result extends OC_TObject>(
+        predicate: OC_PredicateObjectType<DataType>
+    ) {
         return _.pickBy(this.data, predicate) as Partial<DataType> & Result;
     }
 
@@ -550,25 +535,27 @@ class ObjectCollection<
      * Result
      * @see _.LodashResult
      */
-    public result<Result>(path: PathType<DataType>, $default?: Result | ((...args: any[]) => Result)) {
+    public result<Result>(
+        path: OC_PathType<DataType>,
+        $default?: Result | ((...args: any[]) => Result)
+    ) {
         return _.result(this.data, path, $default);
     }
 
     /**
      * Set value to path of object.
      * @method
-     * @param {PathType} path
+     * @param {OC_PathType} path
      * @param {*} [value]
      * @param definedOnly
      */
     public set(
-        path: PathType<DataType> | Record<KeysOrString<DataType>, any>,
+        path: OC_PathType<DataType> | Record<OC_KeysOrString<DataType>, any>,
         value?: any,
         definedOnly: boolean = false
     ): this {
         if (typeof path === "object") {
             for (const key of Object.keys(path)) {
-
                 this.set(key, (path as any)[key], definedOnly);
             }
         } else {
@@ -585,10 +572,13 @@ class ObjectCollection<
     /**
      * Set value to path of object only if value is defined.
      * @method
-     * @param {PathType} path
+     * @param {OC_PathType} path
      * @param {*} [value]
      */
-    public setDefined(path: PathType<DataType> | Record<KeysOrString<DataType>, any>, value?: any): this {
+    public setDefined(
+        path: OC_PathType<DataType> | Record<OC_KeysOrString<DataType>, any>,
+        value?: any
+    ): this {
         return this.set(path, value, true);
     }
 
@@ -611,7 +601,7 @@ class ObjectCollection<
      * @param path
      * @param value
      */
-    public setAndGet(path: PathType | object, value?: any): any {
+    public setAndGet(path: OC_PathType | object, value?: any): any {
         this.set(path, value);
         return value;
     }
@@ -620,7 +610,11 @@ class ObjectCollection<
      * SetWith
      * @see _.LodashSetWith
      */
-    public setWith(path: PathType, value: any, customizer?: _.SetWithCustomizer<DataType>) {
+    public setWith(
+        path: OC_PathType,
+        value: any,
+        customizer?: _.SetWithCustomizer<DataType>
+    ) {
         _.setWith(this.data, path, value, customizer);
         return this;
     }
@@ -653,15 +647,19 @@ class ObjectCollection<
      * Transform
      * @see _.LodashTransform
      */
-    public transform<Result extends Record<string, any>>(iteratee: (...args: any[]) => any, accumulator?: any) {
-        return _.transform(this.data, iteratee, accumulator) as Partial<DataType> & Result;
+    public transform<Result extends Record<string, any>>(
+        iteratee: (...args: any[]) => any,
+        accumulator?: any
+    ) {
+        return _.transform(this.data, iteratee, accumulator) as Partial<DataType> &
+            Result;
     }
 
     /**
      * Unset a path in object.
      * @see _.LodashUnset
      */
-    public unset(path: PathType<DataType>) {
+    public unset(path: OC_PathType<DataType>) {
         _.unset(this.data, path);
         return this;
     }
@@ -670,7 +668,7 @@ class ObjectCollection<
      * Update
      * @see _.LodashUpdate
      */
-    public update(path: PathType, updater: (value: any) => any): this {
+    public update(path: OC_PathType, updater: (value: any) => any): this {
         _.update(this.data, path, updater);
         return this;
     }
@@ -679,7 +677,11 @@ class ObjectCollection<
      * UpdateWith
      * @see _.LodashUpdateWith
      */
-    public updateWith(path: PathType, updater: (oldValue: any) => any, customizer?: _.SetWithCustomizer<DataType>): this {
+    public updateWith(
+        path: OC_PathType,
+        updater: (oldValue: any) => any,
+        customizer?: _.SetWithCustomizer<DataType>
+    ): this {
         _.updateWith(this.data, path, updater, customizer);
         return this;
     }
@@ -705,7 +707,7 @@ class ObjectCollection<
      * @param path
      * @param forceToArrayIfNotArray
      */
-    public array<Result>(path: PathType<DataType>, forceToArrayIfNotArray?: boolean) {
+    public array<Result>(path: OC_PathType<DataType>, forceToArrayIfNotArray?: boolean) {
         const storedValue = this.get(path, undefined);
 
         if (storedValue === undefined) {
@@ -733,7 +735,7 @@ class ObjectCollection<
      * @param path
      * @param $default
      */
-    public path(path: PathType, $default?: object): ObjectCollection {
+    public path(path: OC_PathType, $default?: object): ObjectCollection {
         return this.newInstanceFrom(path, $default);
     }
 
@@ -744,7 +746,10 @@ class ObjectCollection<
      * else if clone is string `!deep`
      * this.clone is used;
      */
-    public return<Result extends TObject = DataType>(clone?: boolean, cloneDeep: boolean = true) {
+    public return<Result extends OC_TObject = DataType>(
+        clone?: boolean,
+        cloneDeep: boolean = true
+    ) {
         return this.all<Result>(clone, cloneDeep);
     }
 
@@ -757,7 +762,10 @@ class ObjectCollection<
      *
      * @alias ObjectCollection.return
      */
-    public all<Result extends TObject = DataType>(clone?: boolean, cloneDeep: boolean = true) {
+    public all<Result extends OC_TObject = DataType>(
+        clone?: boolean,
+        cloneDeep: boolean = true
+    ) {
         if (clone === true) {
             return (cloneDeep ? this.cloneDeep() : this.clone()) as Result;
         }
@@ -775,7 +783,6 @@ class ObjectCollection<
 
     /**
      * Replace main data with new data.
-     * @param data
      */
     public replaceData(data: any) {
         this.data = data;
@@ -791,7 +798,6 @@ class ObjectCollection<
 
     /**
      * Remove null values from object
-     * @returns {{}}
      */
     public allWithoutNullOrUndefined<T = Partial<DataType>>(): T {
         return this.pickBy<T>((value: any) => {
@@ -801,9 +807,8 @@ class ObjectCollection<
 
     /**
      * Remove null values from object
-     * @returns {{}}
      */
-    public defined<T extends TObject = DataType>(): T {
+    public defined<T extends OC_TObject = DataType>() {
         return this.pickBy<T>((value: any) => {
             return value !== null && value !== undefined;
         });
@@ -814,17 +819,18 @@ class ObjectCollection<
      * @param path
      * @param def
      */
-    public sync<SyncReturnType = any>(path: PathType, def?: any) {
+    public sync<SyncReturnType = any>(path: OC_PathType, def?: SyncReturnType) {
         const self = this;
         return {
-            get sync(): SyncReturnType {
+            get sync() {
                 return self.get(path, def);
             },
-            changeTo(value: any) {
+
+            changeTo(value) {
                 self.set(path, value);
                 return this;
             }
-        };
+        } as OC_SyncPath<SyncReturnType>;
     }
 
     /**
@@ -832,7 +838,7 @@ class ObjectCollection<
      * @param path
      * @param def
      */
-    public syncWithInitial<SyncReturnType = any>(path: PathType, def?: any) {
+    public syncWithInitial<SyncReturnType = any>(path: OC_PathType, def?: any) {
         const self = this;
         return {
             initial: self.get(path, def),
@@ -842,31 +848,27 @@ class ObjectCollection<
             get hasChanged(): boolean {
                 return this.sync !== this.initial;
             },
-            changeTo(value: any) {
+            changeTo(value) {
                 self.set(path, value);
                 return this;
             }
-        };
+        } as OC_SyncPathWithInitial<SyncReturnType>;
     }
 
     /**
      * Compute Data
      */
-    public compute<Instance extends ObjectCollection>(
-        this: Instance,
-        fn: (o: Instance) => Instance
-    ): Instance {
+    public compute<Result = any>(fn: (o: ObjectCollection<DataType>) => Result) {
         return fn(this);
     }
 
     /**
      * Compute Data Async
      */
-    public async computeAsync<Instance extends ObjectCollection>(
-        this: Instance,
-        fn: (o: Instance) => Promise<Instance>
-    ): Promise<Instance> {
-        return fn(this);
+    public async computeAsync<Result = any>(
+        fn: (o: ObjectCollection<DataType>) => Promise<Result>
+    ) {
+        return await fn(this);
     }
 }
 
