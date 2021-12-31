@@ -707,8 +707,7 @@ test.group("Public Functions", () => {
         assert.deepEqual(obj.data, { a: 1, c: 3 });
 
         // in order to get a good type we use the all method
-        const result = obj.all<Omit<typeof data, "b">>()
-
+        const result = obj.all<Omit<typeof data, "b">>();
 
         assert.deepEqual(result, { a: 1, c: 3 });
     });
@@ -720,20 +719,20 @@ test.group("Public Functions", () => {
 
         // => { 'a': 1, 'b': 3, 'c': 3 }
         assert.deepEqual(obj.data, { a: 1, b: 3, c: 3 });
-    })
+    });
 
     /**
      * Test data from lodash documentation
      * https://lodash.com/docs/#updateWith
      */
     test("updateWith():", (assert) => {
-        const obj = Obj({})
+        const obj = Obj({});
 
-        obj.updateWith('[0][1]', () => 'a', Object);
+        obj.updateWith("[0][1]", () => "a", Object);
 
         // => { 'a': 1, 'b': 6, 'c': 3 }
-        assert.deepEqual(obj.data, { '0': { '1': 'a' } });
-    })
+        assert.deepEqual(obj.data, { "0": { "1": "a" } });
+    });
 
     test("values():", (assert) => {
         const obj = Obj({ a: 1, b: 2, c: 3 });
@@ -746,7 +745,7 @@ test.group("Public Functions", () => {
 
         // => [1, 2]
         assert.deepEqual(obj2.values(), [1, 2]);
-    })
+    });
 
     test("valuesIn():", (assert) => {
         const obj = Obj({ a: 1, b: 2, c: 3 });
@@ -759,6 +758,5 @@ test.group("Public Functions", () => {
 
         // => [1, 2, 3]
         assert.deepEqual(obj2.valuesIn(), [1, 2, 3]);
-    })
-
+    });
 });

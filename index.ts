@@ -542,7 +542,7 @@ class ObjectCollection<
      * PickBy
      * @see _.LodashPickBy
      */
-    public pickBy<Result extends TObject>(predicate: PredicateObjectType<DataType>) {
+    public pickBy<Result extends TObject = DataType>(predicate: PredicateObjectType<DataType>) {
         return _.pickBy(this.data, predicate) as Partial<DataType> & Result;
     }
 
@@ -784,7 +784,6 @@ class ObjectCollection<
 
     /**
      * Remove null values from object
-     * @returns {ObjectCollection}
      */
     public removeNullOrUndefined() {
         return this.replaceData(this.allWithoutNullOrUndefined());
@@ -804,7 +803,7 @@ class ObjectCollection<
      * Remove null values from object
      * @returns {{}}
      */
-    public defined<T = DataType>(): T {
+    public defined<T extends TObject = DataType>(): T {
         return this.pickBy<T>((value: any) => {
             return value !== null && value !== undefined;
         });
