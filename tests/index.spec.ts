@@ -617,7 +617,18 @@ test.group("Public Functions", () => {
     test("omit():", (assert) => {
         const obj = Obj({ a: 1, b: 2, c: 3 });
 
-        const omitted = obj.omit(["a", "c"]);
+        const omitted = obj.omit("a", "c");
+
+        // => { 'b': 2 }
+        assert.deepEqual(omitted, { b: 2 });
+    });
+
+    test("omitBy():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        const omitted = obj.omitBy(function (value, key) {
+            return key === "a" || key === "c";
+        });
 
         // => { 'b': 2 }
         assert.deepEqual(omitted, { b: 2 });
@@ -636,5 +647,12 @@ test.group("Extra Functions", () => {
         const result = obj.call("foo", ["bar"]);
 
         assert.deepEqual(result, ["bar", "fromFoo"]);
+    });
+
+    test("forget():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 }).forget("b");
+
+        // => { 'a': 1, 'c': 3 }
+        assert.deepEqual(obj.data, { a: 1, c: 3 });
     });
 });

@@ -2,11 +2,12 @@ import _ from "lodash";
 
 type PathType<T = Record<string, any>> =
     | keyof T
-    | keyof T[]
+    | Array<keyof T>
     | string
     | string[]
-    | number
-    | symbol;
+    | number;
+
+type PathsArrayType<T = Record<string, any>> = Array<keyof T> | string[] | number[];
 
 type PredicateFnType<T = any, R = any> = (
     value: FlatArray<T, number> & Record<any, any>,
@@ -239,7 +240,7 @@ class ObjectCollection<
             return true;
         }
 
-        return this.has(path);
+        return this.has(path as string);
     }
 
     /**
@@ -468,24 +469,32 @@ class ObjectCollection<
      * Omit
      * @see _.LodashOmit
      */
-    public omit(paths: PathType<DataType>) {
-        return _.omit(this.data, paths);
+    public omit<Result = Record<string, any>>(...paths: PathType<DataType>[]) {
+        return _.omit(this.data, ...paths) as Partial<DataType> & Result;
     }
 
     /**
      * Omit and return instance of ObjectCollection
      * @returns {ObjectCollection}
      */
-    public forget(paths: PathType): ObjectCollection {
-        return ObjectCollection.use(this.omit(paths));
+    public forget<T extends string | keyof DataType>(
+        paths: T
+    ): ObjectCollection<Omit<DataType, T> | Record<any, any>>;
+
+    public forget<T extends PathsArrayType<DataType>>(paths: T) {
+        return ObjectCollection.use(
+            this.omit(paths) as Omit<DataType, T[number]> | Record<any, any>
+        );
     }
 
     /**
      * OmitBy
      * @see _.LodashOmitBy
      */
-    public omitBy(predicate: any): object {
-        return _.omitBy(this.data, predicate);
+    public omitBy<Result = Record<string, any>>(
+        predicate: PredicateObjectType<DataType>
+    ) {
+        return _.omitBy(this.data, predicate) as Partial<DataType> & Result;
     }
 
     /**
@@ -528,10 +537,14 @@ class ObjectCollection<
      * @param {*} [value]
      * @param definedOnly
      */
-    public set(path: PathType | object, value?: any, definedOnly: boolean = false): this {
+    public set(
+        path: PathType<DataType> | Record<any, any>,
+        value?: any,
+        definedOnly: boolean = false
+    ): this {
         if (typeof path === "object") {
             for (const key of Object.keys(path)) {
-                // @ts-ignore
+                // @ts-ignores
                 this.set(key, path[key]);
             }
         } else {
