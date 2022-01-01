@@ -59,7 +59,7 @@ class ObjectCollection<
      * @param [$default]
      */
     public newInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
-        let pathValue = this.get(path);
+        let pathValue: T = this.get(path);
 
         // Set path value to $default if value is undefined.
         if (pathValue === undefined) {
