@@ -6,4 +6,5 @@ test.ts
 dist
 
 *.js
+!japa.js
 *.d.ts
