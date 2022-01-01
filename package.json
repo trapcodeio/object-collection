@@ -15,10 +15,10 @@
   "author": "trapcodeio",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@types/lodash": "^4.14.178"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.178",
     "japa": "^4.0.0",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.1",
