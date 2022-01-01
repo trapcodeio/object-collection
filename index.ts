@@ -323,9 +323,9 @@ class ObjectCollection<
      * @param {string|string[]} path
      * @param {*} [$default]
      */
-    public get<Result = any>(path: OC_PathType<DataType>, $default?: Result) {
+    public get<Result = unknown>(path: OC_PathType<DataType>, $default?: Result) {
         if (typeof path !== "number" && (path as string).length === 0) {
-            return $default;
+            return $default as Result;
         }
 
         return _.get(this.data, path, $default) as Result;
