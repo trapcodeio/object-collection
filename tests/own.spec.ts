@@ -2,7 +2,7 @@
  *  This file contains tests of helper instance methods not related to lodash
  */
 import test from "japa";
-import dummy from "./dummy.json";
+import dummy from "./dummy";
 import { Obj } from "../exports";
 import ObjectCollection from "..";
 

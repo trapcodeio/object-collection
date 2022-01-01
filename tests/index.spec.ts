@@ -1,5 +1,5 @@
 import test from "japa";
-import dummy from "./dummy.json";
+import dummy from "./dummy";
 import { Obj } from "../exports";
 import ObjectCollection = require("../index");
 
