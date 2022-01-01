@@ -4,6 +4,7 @@ node_modules
 *.log
 test.ts
 dist
+yarn.lock
 
 *.js
 !japa.js
