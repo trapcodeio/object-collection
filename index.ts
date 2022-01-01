@@ -59,7 +59,7 @@ class ObjectCollection<
      * @param [$default]
      */
     public newInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
-        let pathValue: T = this.get(path);
+        let pathValue = this.get(path);
 
         // Set path value to $default if value is undefined.
         if (pathValue === undefined) {
@@ -323,7 +323,7 @@ class ObjectCollection<
      * @param {string|string[]} path
      * @param {*} [$default]
      */
-    public get<Result = unknown>(path: OC_PathType<DataType>, $default?: Result) {
+    public get<Result = any>(path: OC_PathType<DataType>, $default?: Result) {
         if (typeof path !== "number" && (path as string).length === 0) {
             return $default as Result;
         }
