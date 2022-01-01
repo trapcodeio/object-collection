@@ -1,1 +1,3 @@
-export = require("lodash");
+import _ from "lodash";
+
+export = _;
