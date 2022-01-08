@@ -15,9 +15,10 @@ import {
 /**
  * ObjectCollectionClass
  */
-class ObjectCollection<DataType extends OC_TObject = OC_TObject
+class ObjectCollection<
+    DataType extends OC_TObject = OC_TObject
     // CustomType = Record<string, any>
-    > {
+> {
     /**
      * Get lodash
      * @deprecated
