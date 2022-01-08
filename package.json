@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run test",
     "prepublishOnly": "npm run build",
-    "build": "npx tsc",
+    "build": "npx tsc && npm run test",
     "watch": "npx tsc --watch",
     "test": "node japa.js",
     "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'"

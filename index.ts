@@ -15,10 +15,21 @@ import {
 /**
  * ObjectCollectionClass
  */
-class ObjectCollection<
-    DataType extends OC_TObject = OC_TObject
+class ObjectCollection<DataType extends OC_TObject = OC_TObject
     // CustomType = Record<string, any>
-> {
+    > {
+    /**
+     * Get lodash
+     * @deprecated
+     */
+    static getLodash() {
+        console.error(
+            `ObjectCollection.getLodash() is deprecated!`,
+            `Use '_ = require("object-collection/lodash")' instead`
+        );
+        return _;
+    }
+
     /**
      * Return new instance of ObjectCollection;
      * @param data

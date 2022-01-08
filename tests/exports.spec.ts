@@ -15,3 +15,8 @@ test(`function: Obj`, (assert) => {
     assert.equal($obj.data.b, 2);
     assert.equal($obj.data.c, 3);
 });
+
+test(`ObjectCollection.getLodash() is deprecated.`, (assert) => {
+    const _ = ObjectCollection.getLodash();
+    assert.equal(_.get({ foo: "bar" }, "foo"), "bar");
+});
