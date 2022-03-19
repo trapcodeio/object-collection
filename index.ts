@@ -11,14 +11,10 @@ import {
     OC_TObject
 } from "./types";
 
-// type ExtendsObject<T, T2> = T extends OC_TObject ? T : T2;
 /**
  * ObjectCollectionClass
  */
-class ObjectCollection<
-    DataType extends OC_TObject = OC_TObject
-    // CustomType = Record<string, any>
-> {
+class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     /**
      * Get lodash
      * @deprecated
@@ -881,6 +877,36 @@ class ObjectCollection<
         fn: (o: ObjectCollection<DataType>) => Promise<Result>
     ) {
         return await fn(this);
+    }
+
+    /**
+     * Rename a path
+     * @param key
+     * @param newName
+     */
+    public rename(key: string, newName: string): this;
+    public rename(options: Record<string, any>): this;
+    public rename(options: string | Record<string, string>, newName?: string) {
+        // if `options` is string
+        if (typeof options === "string") {
+            if (newName === undefined)
+                throw new Error(`New name for "${options}" is required`);
+
+            this.set(newName, this.get(options));
+            this.unset(options);
+        } else {
+            // if `options` is object
+            // loop through keys
+            for (const [oldKey, newKey] of Object.entries(options)) {
+                if (newKey === undefined)
+                    throw new Error(`New name for "${oldKey}" is required`);
+
+                this.set(newKey, this.get(oldKey));
+                this.unset(oldKey);
+            }
+        }
+
+        return this;
     }
 }
 

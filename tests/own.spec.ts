@@ -279,4 +279,14 @@ test.group("Extra Functions", () => {
 
         assert.deepEqual(obj.data as any, { b: 2, c: 3, z: 20 });
     });
+
+    test("rename():", (assert) => {
+        const obj = Obj({ a: 1, b: 2, c: 3 });
+
+        obj.rename("a", "x");
+        assert.deepEqual(obj.data as any, { x: 1, b: 2, c: 3 });
+
+        obj.rename({ x: "y", c: "z" });
+        assert.deepEqual(obj.data as any, { y: 1, b: 2, z: 3 });
+    });
 });
