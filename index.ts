@@ -910,4 +910,4 @@ class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     }
 }
 
-export = ObjectCollection;
+export default ObjectCollection;

@@ -1,4 +1,4 @@
-export = {
+export default {
     users: [
         {
             id: 0,

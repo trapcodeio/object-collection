@@ -1,3 +1,3 @@
 import _ from "lodash";
 
-export = _;
+export default _;
