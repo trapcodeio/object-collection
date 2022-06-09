@@ -1,6 +1,6 @@
 {
   "name": "object-collection",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Break objects into pieces and control them from those pieces.",
   "main": "index.js",
   "types": "index.d.ts",
