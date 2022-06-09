@@ -1,7 +1,7 @@
 import test from "japa";
 import dummy from "./dummy";
-import { Obj } from "../exports";
-import ObjectCollection = require("../index");
+import {Obj} from "../exports";
+import ObjectCollection from "../index";
 
 function classFooWithPrototypeC() {
     class Foo {
