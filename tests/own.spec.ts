@@ -3,12 +3,12 @@
  */
 import test from "japa";
 import dummy from "./dummy";
-import { Obj } from "../exports";
-import ObjectCollection from "..";
+import {Obj} from "../exports";
+import {ObjectCollection} from "..";
 
 test.group("Extra Functions", () => {
     test("[newInstanceFrom, path]():", (assert) => {
-        const obj = new ObjectCollection({ dummy });
+        const obj = new ObjectCollection({dummy});
         const newObj = obj.newInstanceFrom("users");
 
         // check if new instance matches "users" in the original instance
@@ -29,7 +29,7 @@ test.group("Extra Functions", () => {
 
     test("[newInstanceFrom, path](): where path does not exist but with default value", (assert) => {
         const obj = new ObjectCollection(dummy);
-        const newObj = obj.newInstanceFrom("notFound", { error: "404" });
+        const newObj = obj.newInstanceFrom("notFound", {error: "404"});
 
         // if path is not found, path will be created with {}
         assert.isTrue(dummy.hasOwnProperty("notFound"));
@@ -77,10 +77,10 @@ test.group("Extra Functions", () => {
     });
 
     test("forget():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 }).forget("b");
+        const obj = Obj({a: 1, b: 2, c: 3}).forget("b");
 
         // => { 'a': 1, 'c': 3 }
-        assert.deepEqual(obj.data, { a: 1, c: 3 });
+        assert.deepEqual(obj.data, {a: 1, c: 3});
     });
 
     test("collect():", (assert) => {
@@ -94,44 +94,44 @@ test.group("Extra Functions", () => {
     });
 
     test("setDefined():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         // Set defined values
-        obj.setDefined({ b: 4, c: undefined, d: undefined, e: null });
+        obj.setDefined({b: 4, c: undefined, d: undefined, e: null});
 
         // => { 'a': 1, 'b': 4, 'c': 3 }
-        assert.deepEqual(obj.data, { a: 1, b: 4, c: 3 });
+        assert.deepEqual(obj.data, {a: 1, b: 4, c: 3});
     });
 
     test("setPathsToSameValue():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         obj.setPathsToSameValue(["a", "b", "c"], 4);
 
         // => { 'a': 4, 'b': 4, 'c': 4 }
-        assert.deepEqual(obj.data, { a: 4, b: 4, c: 4 });
+        assert.deepEqual(obj.data, {a: 4, b: 4, c: 4});
     });
 
     test("setAndGet():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         const result = obj.setAndGet("b", 4);
 
         // => { 'a': 1, 'b': 4, 'c': 3 }
-        assert.deepEqual(obj.data, { a: 1, b: 4, c: 3 });
+        assert.deepEqual(obj.data, {a: 1, b: 4, c: 3});
 
         // => 4
         assert.equal(result, 4);
     });
 
     test.failing("array(): fail if value is  not an array", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.deepEqual(obj.array("c"), [3]);
     });
 
     test("array(): pass if value is an or not array", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.deepEqual(obj.array("c", true), [3]);
     });
@@ -141,7 +141,7 @@ test.group("Extra Functions", () => {
      * returns the data the collection holds
      */
     test("[return, all]():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.deepEqual(obj.all(), obj.data);
         assert.deepEqual(obj.return(), obj.data);
@@ -158,7 +158,7 @@ test.group("Extra Functions", () => {
      * returns the data the collection holds
      */
     test("[return, all](): Clone", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.deepEqual(obj.all(true), obj.data);
         assert.deepEqual(obj.return(true), obj.data);
@@ -176,7 +176,7 @@ test.group("Extra Functions", () => {
      * returns the data the collection holds
      */
     test("[return, all](): Clone Deep", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.deepEqual(obj.all(true, true), obj.data);
         assert.deepEqual(obj.return(true, true), obj.data);
@@ -190,7 +190,7 @@ test.group("Extra Functions", () => {
     });
 
     test("toJson():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         assert.equal(obj.toJson(), JSON.stringify(obj.data));
 
@@ -199,39 +199,39 @@ test.group("Extra Functions", () => {
     });
 
     test("replaceData():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
-        obj.replaceData({ a: 6, b: 7, c: 8 });
+        obj.replaceData({a: 6, b: 7, c: 8});
 
-        assert.deepEqual(obj.data, { a: 6, b: 7, c: 8 });
+        assert.deepEqual(obj.data, {a: 6, b: 7, c: 8});
     });
 
     test("removeNullOrUndefined():", (assert) => {
-        const obj = Obj({ a: 1, b: null, c: 3, d: undefined, e: 4 });
+        const obj = Obj({a: 1, b: null, c: 3, d: undefined, e: 4});
 
         obj.removeNullOrUndefined();
 
-        assert.deepEqual(obj.data as Record<string, any>, { a: 1, c: 3, e: 4 });
+        assert.deepEqual(obj.data as Record<string, any>, {a: 1, c: 3, e: 4});
     });
 
     test("allWithoutNullOrUndefined():", (assert) => {
-        const obj = Obj({ a: 1, b: null, c: 3, d: undefined, e: 4 });
+        const obj = Obj({a: 1, b: null, c: 3, d: undefined, e: 4});
 
-        assert.deepEqual(obj.allWithoutNullOrUndefined(), { a: 1, c: 3, e: 4 });
+        assert.deepEqual(obj.allWithoutNullOrUndefined(), {a: 1, c: 3, e: 4});
     });
 
     test("defined():", (assert) => {
-        const data = { a: 1, b: null, c: 3, d: undefined, e: 4 };
+        const data = {a: 1, b: null, c: 3, d: undefined, e: 4};
         const obj = Obj(data);
 
         const defined = obj.defined<Omit<typeof data, "b" | "d">>();
 
         // defined.
-        assert.deepEqual(defined, { a: 1, c: 3, e: 4 });
+        assert.deepEqual(defined, {a: 1, c: 3, e: 4});
     });
 
     test("sync():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         const a = obj.sync<number>("a");
 
@@ -243,7 +243,7 @@ test.group("Extra Functions", () => {
     });
 
     test("syncWithInitial():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         const a = obj.syncWithInitial<number>("b");
 
@@ -259,34 +259,34 @@ test.group("Extra Functions", () => {
     });
 
     test("compute():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         obj.compute((ob) => {
             ob.set("z", 20);
             ob.unset("a");
         });
 
-        assert.deepEqual(obj.data as any, { b: 2, c: 3, z: 20 });
+        assert.deepEqual(obj.data as any, {b: 2, c: 3, z: 20});
     });
 
     test("computeAsync():", async (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         await obj.computeAsync(async (ob) => {
             ob.set("z", 20);
             ob.unset("a");
         });
 
-        assert.deepEqual(obj.data as any, { b: 2, c: 3, z: 20 });
+        assert.deepEqual(obj.data as any, {b: 2, c: 3, z: 20});
     });
 
     test("rename():", (assert) => {
-        const obj = Obj({ a: 1, b: 2, c: 3 });
+        const obj = Obj({a: 1, b: 2, c: 3});
 
         obj.rename("a", "x");
-        assert.deepEqual(obj.data as any, { x: 1, b: 2, c: 3 });
+        assert.deepEqual(obj.data as any, {x: 1, b: 2, c: 3});
 
-        obj.rename({ x: "y", c: "z" });
-        assert.deepEqual(obj.data as any, { y: 1, b: 2, z: 3 });
+        obj.rename({x: "y", c: "z"});
+        assert.deepEqual(obj.data as any, {y: 1, b: 2, z: 3});
     });
 });

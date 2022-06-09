@@ -1,6 +1,6 @@
 import test from "japa";
-import ObjectCollection from "..";
-import { Obj } from "../exports";
+import {ObjectCollection} from "../index";
+import {Obj} from "../exports";
 
 test(`function: Obj`, (assert) => {
     const obj = { a: 1, b: 2, c: 3 };
