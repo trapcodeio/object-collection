@@ -3,7 +3,6 @@ node_modules
 .vscode
 *.log
 test.ts
-dist
 
 *.ts
 !*.d.ts

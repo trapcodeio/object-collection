@@ -2,15 +2,32 @@
   "name": "object-collection",
   "version": "4.0.2",
   "description": "Break objects into pieces and control them from those pieces.",
-  "main": "index.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "exports": {
+      "import": "./dist/exports.mjs",
+      "require": "./exports.js",
+      "types": "./exports.d.ts"
+    },
+    "lodash": {
+      "import": "./dist/lodash.mjs",
+      "require": "./lodash.js",
+      "types": "./lodash.d.ts"
+    }
+  },
   "scripts": {
     "start": "npm run test",
     "prepublishOnly": "npm run build",
     "build": "npx tsc && npm run test",
     "watch": "npx tsc --watch",
     "test": "node japa.js",
-    "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'"
+    "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'",
+    "esm": "npx tsup"
   },
   "repository": "https://github.com/trapcodeio/object-collection.git",
   "author": "trapcodeio",
