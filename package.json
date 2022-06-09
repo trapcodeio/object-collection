@@ -9,12 +9,12 @@
       "require": "./index.js",
       "types": "./index.d.ts"
     },
-    "exports": {
+    "./exports": {
       "import": "./dist/exports.mjs",
       "require": "./exports.js",
       "types": "./exports.d.ts"
     },
-    "lodash": {
+    "./lodash": {
       "import": "./dist/lodash.mjs",
       "require": "./lodash.js",
       "types": "./lodash.d.ts"
