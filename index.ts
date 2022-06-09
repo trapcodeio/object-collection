@@ -14,7 +14,7 @@ import {
 /**
  * ObjectCollectionClass
  */
-class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
+export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     /**
      * Get lodash
      * @deprecated
@@ -910,4 +910,3 @@ class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     }
 }
 
-export default ObjectCollection;

@@ -1,4 +1,4 @@
-import ObjectCollection from "./index";
+import {ObjectCollection} from "./index";
 
 /**
  * Shortcut for ObjectCollection.
