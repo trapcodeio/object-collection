@@ -3,10 +3,9 @@ import { defineConfig } from "tsup";
 export default defineConfig((_options) => {
     return {
         entry: ["./index.ts", "./exports.ts", "./lodash.ts"],
-        format: ["esm"],
+        format: ["cjs"],
         // minify: !options.watch,
         outExtension: () => ({ js: `.js` }),
-        outDir: "./dist/esm",
         dts: false,
         splitting: true,
         bundle: false,

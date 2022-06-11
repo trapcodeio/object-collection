@@ -25,8 +25,7 @@
     "prepublishOnly": "npm run build",
     "build": "npx tsc && npm run esm && npm run test",
     "watch": "npx tsc --watch",
-    "test": "node -r ts-node/register bin/test.ts",
-    "test:esm": "node --loader=ts-node/esm bin/test.ts",
+    "test": "node --loader=ts-node/esm bin/test.ts",
     "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'",
     "esm": "npx tsup"
   },
