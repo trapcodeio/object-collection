@@ -3,21 +3,24 @@
   "version": "4.0.9",
   "description": "Break objects into pieces and control them from those pieces.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./index.js",
-      "types": "./index.d.ts"
+      "require": "./index.js"
     },
     "./exports": {
+      "types": "./exports.d.ts",
+
       "import": "./dist/esm/exports.js",
-      "require": "./exports.js",
-      "types": "./exports.d.ts"
+      "require": "./exports.js"
     },
     "./lodash": {
+      "types": "./lodash.d.ts",
       "import": "./dist/esm/lodash.js",
-      "require": "./lodash.js",
-      "types": "./lodash.d.ts"
+      "require": "./lodash.js"
     }
   },
   "scripts": {
