@@ -10,6 +10,7 @@ export default defineConfig((_options) => {
         splitting: true,
         bundle: false,
         treeshake: false,
-        clean: true
+        clean: true,
+        onSuccess: "cp ./dist.package.json ./dist/package.json"
     };
 });
