@@ -1,8 +1,8 @@
-import test from "japa";
-import {ObjectCollection} from "../index";
-import {Obj} from "../exports";
+import { test } from "@japa/runner";
+import { ObjectCollection } from "../index.js";
+import { Obj } from "../exports.js";
 
-test(`function: Obj`, (assert) => {
+test(`function: Obj`, ({ assert }) => {
     const obj = { a: 1, b: 2, c: 3 };
 
     const $obj = Obj(obj);
@@ -16,7 +16,7 @@ test(`function: Obj`, (assert) => {
     assert.equal($obj.data.c, 3);
 });
 
-test(`ObjectCollection.getLodash() is deprecated.`, (assert) => {
+test(`ObjectCollection.getLodash() is deprecated.`, ({ assert }) => {
     const _ = ObjectCollection.getLodash();
     assert.equal(_.get({ foo: "bar" }, "foo"), "bar");
 });

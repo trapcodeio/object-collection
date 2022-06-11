@@ -2,7 +2,8 @@ node_modules
 .idea
 .vscode
 *.log
-test.ts
+tests
+bin
 
 *.ts
 !*.d.ts

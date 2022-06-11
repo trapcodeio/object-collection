@@ -26,7 +26,7 @@
     "prepublishOnly": "npm run build",
     "build": "npx tsc && npm run esm && npm run test",
     "watch": "npx tsc --watch",
-    "test": "node japa.js",
+    "test": "node --loader=ts-node/esm bin/test.ts",
     "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'",
     "esm": "npx tsup"
   },
@@ -38,11 +38,14 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@japa/assert": "^1.3.4",
+    "@japa/runner": "^2.0.9",
+    "@japa/spec-reporter": "^1.1.12",
     "japa": "^4.0.0",
     "nodemon": "^2.0.16",
     "prettier": "^2.6.2",
     "ts-node": "^10.8.1",
-    "tsup": "^6.1.0",
+    "tsup": "^6.1.2",
     "typescript": "^4.7.3"
   },
   "keywords": [

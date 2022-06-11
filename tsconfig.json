@@ -11,7 +11,8 @@
     //      "es2019"
     //    ],
     "types": [
-      "@types/lodash"
+      "@types/lodash",
+      "@japa/assert"
     ],
     /* Specify library files to be included in the compilation. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
@@ -91,6 +92,10 @@
   "exclude": [
     "tests",
     "dist",
-    "tsup.config.ts"
-  ]
+    "tsup.config.ts",
+    "bin"
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+  }
 }

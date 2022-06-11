@@ -2,9 +2,9 @@ node_modules
 .idea
 .vscode
 *.log
-test.ts
 dist
 yarn.lock
+bin
 
 *.js
 !japa.js
