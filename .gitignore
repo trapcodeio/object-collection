@@ -4,7 +4,6 @@ node_modules
 *.log
 dist
 yarn.lock
-bin
 
 *.js
 !japa.js
