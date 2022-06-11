@@ -8,18 +8,18 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./index.js"
+      "require": "./dist/index.js",
+      "import": "./index.js"
     },
     "./exports": {
       "types": "./exports.d.ts",
-      "import": "./dist/esm/exports.js",
-      "require": "./exports.js"
+      "require": "./dist/exports.js",
+      "import": "./exports.js"
     },
     "./lodash": {
       "types": "./lodash.d.ts",
-      "import": "./dist/esm/lodash.js",
-      "require": "./lodash.js"
+      "require": "./dist/lodash.js",
+      "import": "./lodash.js"
     }
   },
   "scripts": {
