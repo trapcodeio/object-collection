@@ -1,5 +1,5 @@
-import _ from "./lodash";
-import {
+import _ from "./lodash.js";
+import type {
     OC_KeysOrString,
     OC_PathsArrayType,
     OC_PathType,
@@ -9,7 +9,7 @@ import {
     OC_SyncPath,
     OC_SyncPathWithInitial,
     OC_TObject
-} from "./types";
+} from "./types.js";
 
 /**
  * ObjectCollectionClass
@@ -909,4 +909,3 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
         return this;
     }
 }
-

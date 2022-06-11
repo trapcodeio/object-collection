@@ -6,3 +6,5 @@ test.ts
 
 *.ts
 !*.d.ts
+
+.prettier
