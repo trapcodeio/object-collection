@@ -4,8 +4,8 @@ export default defineConfig({
     entry: ["./index.ts", "./exports.ts", "./lodash.ts"],
     format: ["esm"],
     dts: false,
-    splitting: false,
-    bundle: false,
-    treeshake: true,
+    splitting: true,
+    bundle: true,
+    treeshake: false,
     clean: true
 });
