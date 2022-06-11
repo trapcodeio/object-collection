@@ -1,4 +1,4 @@
-import {ObjectCollection} from "./index.js";
+import { ObjectCollection } from "./index.js";
 
 /**
  * Shortcut for ObjectCollection.
