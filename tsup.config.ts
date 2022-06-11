@@ -5,7 +5,7 @@ export default defineConfig((_options) => {
         entry: ["./index.ts", "./exports.ts", "./lodash.ts"],
         format: ["cjs"],
         // minify: !options.watch,
-        outExtension: () => ({ js: `.js` }),
+        // outExtension: () => ({ js: `.js` }),
         dts: false,
         splitting: true,
         bundle: false,

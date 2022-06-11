@@ -6,17 +6,17 @@
   "type": "module",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "import": "./index.js",
       "types": "./index.d.ts"
     },
     "./exports": {
-      "require": "./dist/exports.js",
+      "require": "./dist/exports.cjs",
       "import": "./exports.js",
       "types": "./exports.d.ts"
     },
     "./lodash": {
-      "require": "./dist/lodash.js",
+      "require": "./dist/lodash.cjs",
       "import": "./lodash.js",
       "types": "./lodash.d.ts"
     }
