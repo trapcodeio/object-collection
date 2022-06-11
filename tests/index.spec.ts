@@ -1,4 +1,4 @@
-import { test } from "@japa/runner";
+import { test } from "./japa.js";
 import dummy from "./dummy.js";
 import { Obj } from "../exports.js";
 import { ObjectCollection } from "../index.js";

@@ -1,6 +1,6 @@
-import { test } from "@japa/runner";
 import { ObjectCollection } from "../index.js";
 import { Obj } from "../exports.js";
+import { test } from "./japa.js";
 
 test(`function: Obj`, ({ assert }) => {
     const obj = { a: 1, b: 2, c: 3 };

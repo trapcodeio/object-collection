@@ -1,7 +1,7 @@
 /**
  *  This file contains tests of helper instance methods not related to lodash
  */
-import { test } from "@japa/runner";
+import { test } from "./japa.js";
 import dummy from "./dummy.js";
 import { Obj } from "../exports.js";
 import { ObjectCollection } from "../index.js";
