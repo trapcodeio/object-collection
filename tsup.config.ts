@@ -6,6 +6,7 @@ export default defineConfig((_options) => {
         format: ["esm"],
         // minify: !options.watch,
         outExtension: () => ({ js: `.js` }),
+        outDir: "./dist/esm",
         dts: false,
         splitting: true,
         bundle: false,

@@ -5,17 +5,17 @@
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./dist/esm/index.js",
       "require": "./index.js",
       "types": "./index.d.ts"
     },
     "./exports": {
-      "import": "./dist/exports.js",
+      "import": "./dist/esm/exports.js",
       "require": "./exports.js",
       "types": "./exports.d.ts"
     },
     "./lodash": {
-      "import": "./dist/lodash.js",
+      "import": "./dist/esm/lodash.js",
       "require": "./lodash.js",
       "types": "./lodash.d.ts"
     }
