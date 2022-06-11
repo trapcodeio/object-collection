@@ -1,6 +1,6 @@
 {
   "name": "object-collection",
-  "version": "4.0.9",
+  "version": "4.0.10",
   "description": "Break objects into pieces and control them from those pieces.",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,7 +13,6 @@
     },
     "./exports": {
       "types": "./exports.d.ts",
-
       "import": "./dist/esm/exports.js",
       "require": "./exports.js"
     },
