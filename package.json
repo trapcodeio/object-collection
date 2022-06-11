@@ -1,6 +1,6 @@
 {
   "name": "object-collection",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "description": "Break objects into pieces and control them from those pieces.",
   "type": "module",
   "exports": {
