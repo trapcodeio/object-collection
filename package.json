@@ -23,11 +23,11 @@
   "scripts": {
     "start": "npm run test",
     "prepublishOnly": "npm run build",
-    "build": "npx tsc && npm run esm && npm run test",
+    "build": "npx tsc && npm run bundle && npm run test",
     "watch": "npx tsc --watch",
     "test": "node --loader=ts-node/esm bin/test.ts",
     "test-dev": "npx nodemon japa.js --watch 'tests/**' --ext 'ts'",
-    "esm": "npx tsup"
+    "bundle": "npx tsup"
   },
   "repository": "https://github.com/trapcodeio/object-collection.git",
   "author": "trapcodeio",
