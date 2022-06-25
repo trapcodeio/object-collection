@@ -5,8 +5,7 @@ export type OC_PathType<T = Record<string, any>> =
     | Array<keyof T>
     | string
     | string[]
-    | number
-    | Path<T>;
+    | number;
 
 export type OC_PathsArrayType<T extends OC_TObject> = (keyof T)[] | string[] | number[];
 
