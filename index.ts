@@ -42,7 +42,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param data
      */
     public static useCloned<DT>(data: DT) {
-        return this.use<DT>(_.cloneDeep(data));
+        return new this<DT>(_.cloneDeep(data));
     }
 
     /**
@@ -916,6 +916,22 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
 
 export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> {
     public data!: DataType;
+
+    /**
+     * Return new instance of ObjectCollectionTyped;
+     * @param data
+     */
+    public static use<DT>(data: DT = {} as DT) {
+        return new this<DT>(data);
+    }
+
+    /**
+     * Return new cloned instance of ObjectCollectionTyped;
+     * @param data
+     */
+    public static useCloned<DT>(data: DT) {
+        return new this<DT>(_.cloneDeep(data));
+    }
 
     /**
      * Get typed path of object or return default.

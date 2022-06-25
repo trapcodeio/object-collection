@@ -43,14 +43,9 @@ test.group("Typed ObjectCollection", (group) => {
     });
 
     // test("inheritance", ({ assert }) => {
-    //     const o = new ObjectCollectionTyped({
+    //     const o = ObjectCollectionTyped.use({
     //         hello: "world",
     //         deep: { xam: 0, techie: 1 }
     //     });
-    //
-    //     const branch = o.newTypedInstanceFrom("deep");
-    //
-    //     o.getTyped("deep.techie");
-    //     console.log(branch.getTyped);
     // }).pin();
 });
