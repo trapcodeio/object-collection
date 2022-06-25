@@ -1,6 +1,6 @@
 {
   "name": "object-collection",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Break objects into pieces and control them from those pieces.",
   "type": "module",
   "main": "./dist/index.js",
