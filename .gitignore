@@ -8,3 +8,5 @@ yarn.lock
 *.js
 !japa.js
 *.d.ts
+
+tests/play.ts

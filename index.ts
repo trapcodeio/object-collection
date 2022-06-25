@@ -8,7 +8,9 @@ import type {
     OC_PredicateType,
     OC_SyncPath,
     OC_SyncPathWithInitial,
-    OC_TObject
+    OC_TObject,
+    Path,
+    PathValue
 } from "./types.js";
 
 /**
@@ -32,7 +34,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param data
      */
     public static use<DT>(data: DT = {} as DT) {
-        return new ObjectCollection<DT>(data);
+        return new this<DT>(data);
     }
 
     /**
@@ -93,7 +95,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * This does not mutate main object in this.data
      * @alias cloneInstanceFrom
      */
-    public clonePath<T>(path: OC_PathType, $default?: T) {
+    public clonePath<T>(path: OC_PathType<DataType>, $default?: T) {
         return this.cloneInstanceFrom<T>(path, $default);
     }
 
@@ -331,6 +333,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param {string|string[]} path
      * @param {*} [$default]
      */
+    // declare function get<T, P extends Path<T>>(obj: T, path: P): PathValue<T, P>;
     public get<Result = any>(path: OC_PathType<DataType>, $default?: Result) {
         if (typeof path !== "number" && (path as string).length === 0) {
             return $default as Result;
@@ -372,7 +375,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @see _.LodashHas
      * @return {boolean}.
      */
-    public has(path: OC_PathType) {
+    public has(path: OC_PathType<DataType>) {
         return _.has(this.data, path);
     }
 
@@ -383,7 +386,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @see _.LodashHasIn
      * @return {boolean}
      */
-    public hasIn(path: OC_PathType): boolean {
+    public hasIn(path: OC_PathType<DataType>): boolean {
         return _.hasIn(this.data, path);
     }
 
@@ -407,7 +410,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * Invoke
      * @see _.LodashInvoke
      */
-    public invoke(path: OC_PathType, ...args: any[]) {
+    public invoke(path: OC_PathType<DataType>, ...args: any[]) {
         return _.invoke(this.data, path, ...args);
     }
 
@@ -609,9 +612,9 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param value
      */
-    public setAndGet(path: OC_PathType | object, value?: any): any {
+    public setAndGet<Result>(path: OC_PathType<DataType>, value?: Result): Result {
         this.set(path, value);
-        return value;
+        return value as Result;
     }
 
     /**
@@ -619,7 +622,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @see _.LodashSetWith
      */
     public setWith(
-        path: OC_PathType,
+        path: OC_PathType<DataType>,
         value: any,
         customizer?: _.SetWithCustomizer<DataType>
     ) {
@@ -676,7 +679,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * Update
      * @see _.LodashUpdate
      */
-    public update(path: OC_PathType, updater: (value: any) => any): this {
+    public update(path: OC_PathType<DataType>, updater: (value: any) => any): this {
         _.update(this.data, path, updater);
         return this;
     }
@@ -686,7 +689,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @see _.LodashUpdateWith
      */
     public updateWith(
-        path: OC_PathType,
+        path: OC_PathType<DataType>,
         updater: (oldValue: any) => any,
         customizer?: _.SetWithCustomizer<DataType>
     ): this {
@@ -743,7 +746,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param $default
      */
-    public path(path: OC_PathType, $default?: object): ObjectCollection {
+    public path(path: OC_PathType<DataType>, $default?: object): ObjectCollection {
         return this.newInstanceFrom(path, $default);
     }
 
@@ -827,7 +830,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param def
      */
-    public sync<SyncReturnType = any>(path: OC_PathType, def?: SyncReturnType) {
+    public sync<SyncReturnType = any>(path: OC_PathType<DataType>, def?: SyncReturnType) {
         const self = this;
         return {
             get sync() {
@@ -846,7 +849,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param def
      */
-    public syncWithInitial<SyncReturnType = any>(path: OC_PathType, def?: any) {
+    public syncWithInitial<SyncReturnType = any>(path: OC_PathType<DataType>, def?: any) {
         const self = this;
         return {
             initial: self.get(path, def),
@@ -907,5 +910,29 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
         }
 
         return this;
+    }
+}
+
+export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> {
+    public data!: DataType;
+
+    constructor(data: DataType) {
+        super(data as DataType);
+    }
+
+    getTyped<P extends Path<DataType>, R extends PathValue<DataType, P>>(
+        path: P,
+        def?: R
+    ): PathValue<DataType, P> {
+        return this.get(path as string, def as any) as R;
+    }
+
+    setTyped<P extends Path<DataType>>(path: P, value: PathValue<DataType, P>): this;
+    setTyped<P extends Path<DataType>>(update: Partial<DataType>): this;
+    setTyped<P extends Path<DataType>>(
+        path: P | Partial<DataType>,
+        value?: PathValue<DataType, P>
+    ): this {
+        return this.set(path as string, value);
     }
 }
