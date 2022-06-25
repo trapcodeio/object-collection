@@ -1,4 +1,4 @@
-import { ObjectCollection } from "./index.js";
+import { ObjectCollection, ObjectCollectionTyped } from "./index.js";
 
 /**
  * Shortcut for ObjectCollection.
@@ -11,4 +11,17 @@ import { ObjectCollection } from "./index.js";
  */
 export function Obj<DT>(obj: DT) {
     return ObjectCollection.use<DT>(obj);
+}
+
+/**
+ * Shortcut for ObjectCollectionTyped.
+ * @param obj
+ *
+ * @example
+ * const obj = ObjTyped({foo: "bar"});
+ * // is same as
+ * const obj = new ObjectCollectionTyped({foo: "bar"});
+ */
+export function ObjTyped<DT>(obj: DT) {
+    return ObjectCollectionTyped.use<DT>(obj);
 }
