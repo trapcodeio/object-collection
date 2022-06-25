@@ -41,4 +41,16 @@ test.group("Typed ObjectCollection", (group) => {
         assert.equal(obj.getTyped("verified"), true);
         assert.equal(obj.getTyped("deep.a.b.c"), false);
     });
+
+    // test("inheritance", ({ assert }) => {
+    //     const o = new ObjectCollectionTyped({
+    //         hello: "world",
+    //         deep: { xam: 0, techie: 1 }
+    //     });
+    //
+    //     const branch = o.newTypedInstanceFrom("deep");
+    //
+    //     o.getTyped("deep.techie");
+    //     console.log(branch.getTyped);
+    // }).pin();
 });

@@ -64,7 +64,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     }
 
     /**
-     * Return path as an instance of object validator
+     * Return path as an instance of object-collection
      * @param path
      * @param [$default]
      */
@@ -77,7 +77,8 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
             this.set(path, pathValue);
         }
 
-        return new ObjectCollection<T>(pathValue);
+        const Class = this.constructor as typeof ObjectCollection;
+        return new Class<T>(pathValue);
     }
 
     /**
@@ -328,18 +329,18 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     }
 
     /**
-     * Get path of object or return.
+     * Get path of object or return default.
      * @method
      * @param {string|string[]} path
-     * @param {*} [$default]
+     * @param def
+     * @see _.LodashGet
      */
-    // declare function get<T, P extends Path<T>>(obj: T, path: P): PathValue<T, P>;
-    public get<Result = any>(path: OC_PathType<DataType>, $default?: Result) {
+    public get<Result = any>(path: OC_PathType<DataType>, def?: Result) {
         if (typeof path !== "number" && (path as string).length === 0) {
-            return $default as Result;
+            return def as Result;
         }
 
-        return _.get(this.data, path, $default) as Result;
+        return _.get(this.data, path, def) as Result;
     }
 
     /**
@@ -481,9 +482,8 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     ): ObjectCollection<Omit<DataType, T> | OC_TObject>;
 
     public forget<T extends OC_PathsArrayType<DataType>>(paths: T) {
-        return ObjectCollection.use(
-            this.omit(paths) as Omit<DataType, T[number]> | OC_TObject
-        );
+        const Model = this.constructor as typeof ObjectCollection;
+        return new Model(this.omit(paths) as Omit<DataType, T[number]> | OC_TObject);
     }
 
     /**
@@ -529,7 +529,8 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     >(paths: T): ObjectCollection<Pick<DataType, T[number]> & Result>;
 
     public collect(paths: OC_PathsArrayType<DataType>) {
-        return ObjectCollection.use(this.pick(paths));
+        const Model = this.constructor as typeof ObjectCollection;
+        return new Model(this.pick(paths));
     }
 
     /**
@@ -746,7 +747,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param $default
      */
-    public path(path: OC_PathType<DataType>, $default?: object): ObjectCollection {
+    public path<T>(path: OC_PathType<DataType>, $default?: T) {
         return this.newInstanceFrom(path, $default);
     }
 
@@ -916,10 +917,13 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
 export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> {
     public data!: DataType;
 
-    constructor(data: DataType) {
-        super(data as DataType);
-    }
-
+    /**
+     * Get typed path of object or return default.
+     * @method
+     * @param {string|string[]} path
+     * @param def
+     * @see _.LodashGet
+     */
     getTyped<P extends Path<DataType>, R extends PathValue<DataType, P>>(
         path: P,
         def?: R
@@ -927,6 +931,12 @@ export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> 
         return this.get(path as string, def as any) as R;
     }
 
+    /**
+     * Set Typed value to path of object.
+     * @method
+     * @param {OC_PathType} path
+     * @param {*} [value]
+     */
     setTyped<P extends Path<DataType>>(path: P, value: PathValue<DataType, P>): this;
     setTyped<P extends Path<DataType>>(update: Partial<DataType>): this;
     setTyped<P extends Path<DataType>>(
@@ -934,5 +944,29 @@ export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> 
         value?: PathValue<DataType, P>
     ): this {
         return this.set(path as string, value);
+    }
+
+    /**
+     * Return path as an instance of object-collection
+     * @param path
+     * @param def
+     */
+    newTypedInstanceFrom<P extends Path<DataType>, D extends PathValue<DataType, P>>(
+        path: P,
+        def?: D
+    ) {
+        return this.newInstanceFrom(path as string, def) as ObjectCollectionTyped<D>;
+    }
+
+    /**
+     * Alias for .newTypedInstanceFrom
+     * @param path
+     * @param def
+     */
+    pathTyped<P extends Path<DataType>, D extends PathValue<DataType, P>>(
+        path: P,
+        def?: D
+    ) {
+        return this.newTypedInstanceFrom(path, def);
     }
 }
