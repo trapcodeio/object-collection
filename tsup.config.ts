@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig((_options) => {
     return {
-        entry: ["./index.ts", "./exports.ts", "./lodash.ts"],
+        entry: ["./index.ts", "./exports.ts", "./lodash.ts", "./types.ts"],
         format: ["cjs"],
         // minify: !options.watch,
         outExtension: () => ({ js: `.js` }),

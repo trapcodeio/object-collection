@@ -11,6 +11,11 @@
       "require": "./dist/index.js",
       "import": "./index.js"
     },
+    "./types": {
+      "types": "./types.d.ts",
+      "require": "./dist/types.js",
+      "import": "./types.js"
+    },
     "./exports": {
       "types": "./exports.d.ts",
       "require": "./dist/exports.js",
