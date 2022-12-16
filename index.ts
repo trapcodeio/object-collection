@@ -33,7 +33,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * Return new instance of ObjectCollection;
      * @param data
      */
-    public static use<DT>(data: DT = {} as DT) {
+    public static use<DT extends OC_TObject>(data: DT = {} as DT) {
         return new this<DT>(data);
     }
 
@@ -41,7 +41,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * Return new cloned instance of ObjectCollection;
      * @param data
      */
-    public static useCloned<DT>(data: DT) {
+    public static useCloned<DT extends OC_TObject>(data: DT) {
         return new this<DT>(_.cloneDeep(data));
     }
 
@@ -68,7 +68,10 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param [$default]
      */
-    public newInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
+    public newInstanceFrom<T extends OC_TObject>(
+        path: OC_PathType<DataType>,
+        $default: T = {} as T
+    ) {
         let pathValue = this.get(path);
 
         // Set path value to $default if value is undefined.
@@ -87,7 +90,10 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param [$default]
      */
-    public cloneInstanceFrom<T>(path: OC_PathType<DataType>, $default: T = {} as T) {
+    public cloneInstanceFrom<T extends OC_TObject>(
+        path: OC_PathType<DataType>,
+        $default: T = {} as T
+    ) {
         return new ObjectCollection<T>(_.cloneDeep(this.get(path, $default)));
     }
 
@@ -96,7 +102,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * This does not mutate main object in this.data
      * @alias cloneInstanceFrom
      */
-    public clonePath<T>(path: OC_PathType<DataType>, $default?: T) {
+    public clonePath<T extends OC_TObject>(path: OC_PathType<DataType>, $default?: T) {
         return this.cloneInstanceFrom<T>(path, $default);
     }
 
@@ -747,7 +753,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
      * @param path
      * @param $default
      */
-    public path<T>(path: OC_PathType<DataType>, $default?: T) {
+    public path<T extends OC_TObject>(path: OC_PathType<DataType>, $default?: T) {
         return this.newInstanceFrom(path, $default);
     }
 
@@ -811,7 +817,7 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     /**
      * Remove null values from object
      */
-    public allWithoutNullOrUndefined<T = Partial<DataType>>(): T {
+    public allWithoutNullOrUndefined<T extends OC_TObject = Partial<DataType>>(): T {
         return this.pickBy<T>((value: any) => {
             return value !== null && value !== undefined;
         });
@@ -914,14 +920,16 @@ export class ObjectCollection<DataType extends OC_TObject = OC_TObject> {
     }
 }
 
-export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> {
+export class ObjectCollectionTyped<
+    DataType extends OC_TObject
+> extends ObjectCollection<DataType> {
     public data!: DataType;
 
     /**
      * Return new instance of ObjectCollectionTyped;
      * @param data
      */
-    public static use<DT>(data: DT = {} as DT) {
+    public static use<DT extends OC_TObject>(data: DT = {} as DT) {
         return new this<DT>(data);
     }
 
@@ -929,7 +937,7 @@ export class ObjectCollectionTyped<DataType> extends ObjectCollection<DataType> 
      * Return new cloned instance of ObjectCollectionTyped;
      * @param data
      */
-    public static useCloned<DT>(data: DT) {
+    public static useCloned<DT extends OC_TObject>(data: DT) {
         return new this<DT>(_.cloneDeep(data));
     }
 
